@@ -1,0 +1,22 @@
+{
+  "name": "jparser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "parse_jobs": "node jscraper.js"
+  },
+  "config": {
+    "job-name": "",
+    "job-location": ""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsdom": "^22.1.0",
+    "node-fetch": "^3.3.2",
+    "puppeteer": "^21.4.1",
+    "xmldom": "^0.6.0"
+  }
+}
