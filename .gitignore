@@ -129,6 +129,19 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Arquivos de banco de dados SQLite
+db.sqlite3
+
+# Diretório __pycache__ (Python cache)
+__pycache__
+
+# Arquivos de migrações do Django
+*/migrations/*.py
+*/migrations/*.pyc
+
+# Diretório de mídia (arquivos enviados pelo usuário)
+media/
+
 
 # custom config
 jParserConfig.json
