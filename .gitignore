@@ -131,4 +131,7 @@ dist
 
 
 # custom config
-jParserConfig.json
+jParserConfig.js
+autojobs
+autojobs.db
+

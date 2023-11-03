@@ -1,5 +1,5 @@
 const pup = require('puppeteer');
-const LNconfig = require('./jParserConfig.json');
+const LNconfig = require('../jParserConfig.json');
 const yargs = require('yargs');
 
 const argv = yargs

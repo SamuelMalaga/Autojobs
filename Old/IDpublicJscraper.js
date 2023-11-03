@@ -1,6 +1,7 @@
 const pup = require('puppeteer');
-const LNconfig = require('./jParserConfig.json');
+const sqlite3 = require('sqlite3').verbose();
 const yargs = require('yargs');
+const fs = require('fs');
 
 const argv = yargs
   .options({
@@ -55,7 +56,7 @@ async function scrollToEnd(page) {
   try {
     await page.click('button[aria-label="Ver mais vagas"]');
   } catch (error) {
-    console.log('Erro ao clicar no botão "Ver mais vagas":', error.message);
+
   }
 
   return false; // A página ainda não atingiu o final.
@@ -69,7 +70,11 @@ async function extractDataFromPage(page) {
     for (let i = 0; i < iterator.snapshotLength; i++) {
       const item = iterator.snapshotItem(i);
       const dataEntityUrn = item.getAttribute('data-entity-urn');
-      items.push({ text: dataEntityUrn });
+      items.push({
+        JobId: dataEntityUrn.match(/\d+$/)[0],
+        JobTitle:"",
+        JobDescription:""
+       });
     }
 
     return items;
@@ -77,10 +82,45 @@ async function extractDataFromPage(page) {
 
   return data;
 }
+async function saveDataToJSON(data, filename) {
+  try {
+    const jsonData = JSON.stringify(data, null, 2); // Converte os dados em formato JSON com recuo de 2 espaços.
+    fs.writeFileSync(filename, jsonData); // Salva os dados em um arquivo JSON.
 
+    console.log(`Dados salvos em ${filename}`);
+  } catch (error) {
+    console.error('Erro ao salvar os dados em JSON:', error);
+  }
+}
+async function saveDataToSQLite(data) {
+  const db = new sqlite3.Database('jobs.db');
+  db.serialize(() => {
+    db.run('BEGIN TRANSACTION');
 
+    const stmt = db.prepare('INSERT INTO jobs (jobId, title, description) VALUES (?, ?, ?)');
+
+    for (const item of data) {
+      stmt.run(item.JobId, item.JobTitle, item.JobDescription);
+    }
+
+    stmt.finalize();
+    db.run('COMMIT');
+  });
+
+  db.close();
+}
+
+// const db = new sqlite3.Database('jobs.db');
+
+// db.serialize(function () {
+//   db.run("CREATE TABLE jobs (jobId TEXT, title TEXT, description TEXT)");
+// });
+
+// db.close();
 
 (async () => {
+  const startTime = new Date();
+  console.log(`Iniciando scraping em ${startTime.getHours()}:${startTime.getMinutes()}:${startTime.getSeconds()}`)
   const browser = await pup.launch({headless: false});
   const page = await browser.newPage();
 
@@ -111,8 +151,11 @@ async function extractDataFromPage(page) {
 
   const output = await extractDataFromPage(page);
 
-  console.log(output.length)
+  //saveDataToSQLite(output)
+  //await saveDataToJSON(output, `parsedJobs_jobname=${jobName}_loc${jobLocation}_REMOTE.json`);
 
+  await browser.close();
+  const endTime = new Date();
+  console.log(`Iniciando scraping em ${endTime.getHours()}:${endTime.getMinutes()}:${endTime.getSeconds()}`)
 
-  //await browser.close();
 })();
