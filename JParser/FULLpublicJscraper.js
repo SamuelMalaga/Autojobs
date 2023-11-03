@@ -273,7 +273,7 @@ async function parseLiItems(page, maxItens) {
     }
 
     //const randomDelay = Math.floor(Math.random() * (10000 - 8000 + 1)) + 8000;
-    await delayTime(10000)
+    await delayTime(6000)
 
     // Aumente o contador de itens coletados.
     itensColetados++;

@@ -134,4 +134,5 @@ dist
 jParserConfig.json
 autojobs
 autojobs.db
+venv/
 
