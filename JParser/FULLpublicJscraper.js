@@ -160,7 +160,7 @@ async function insertJobsIntoDatabase(databaseName, jobs) {
   const db = new sqlite3.Database(databaseName);
 
   const insertJobQuery = `
-      INSERT INTO jobs (job_id, job_title, company_name, job_link, job_description, double_Check)
+      INSERT INTO jobs (job_id, job_title, company_name, job_link, job_description, double_check)
       VALUES (?, ?, ?, ?, ?, ?);
   `;
 
@@ -366,7 +366,7 @@ async function cleanUpParsedResults(parsedResults) {
 
   //console.log(cleanedOutput)
 
-  await insertJobsIntoDatabase('autojobs.db',cleanedOutput )
+  await insertJobsIntoDatabase('C:/Users/SamuelMendesMalaga/Documents/Autojobs/SQLiteDB/autojobs.db',cleanedOutput )
 
   //console.log(cleanedOutput)
 

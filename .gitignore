@@ -148,4 +148,5 @@ jParserConfig.json
 autojobs
 autojobs.db
 venv/
+SQLiteDB/
 

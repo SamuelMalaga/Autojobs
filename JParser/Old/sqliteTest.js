@@ -1,7 +1,10 @@
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const dbPath = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/SQLiteDB/autojobs.db';
 
 // Abra o banco de dados (ou crie um novo se não existir)
-const db = new sqlite3.Database('autojobs.db');
+const db = new sqlite3.Database(dbPath);
 
 // Script SQL para criar a tabela
 const createTableQuery = `
