@@ -20,5 +20,6 @@ from JobsAPI import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('jobs/', views.job_list)
+    path('jobs/', views.job_list),
+    path('jobs/<int:id>', views.job_detail)
 ]

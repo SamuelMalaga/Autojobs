@@ -27,7 +27,7 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
   - Armazenar as informações obtidas pelo bot
   - Armazenar as informações manipuladas dentro do app
   - Armazenar os currículos gerados
-### Caminho de contrução
+### Caminho de construção
 1. Criar bot de para obtenção dos jobs
 2. Criar a API para interação com banco de dados e com o front
 3. Criar o front para mainpulação dos dados
@@ -36,3 +36,13 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
 - Diagrama arquitetural do sistema
 - Relacionamento de dados
 - Diagrama de classes
+
+### Requisitos API
+- Pegar todos os jobs (OK)
+- Adicionar um job
+- Editar um job
+- Excluir um job
+- Rodar o scraper
+- Receber input de perfil de usuário (currículo e dados do currículo)
+- Executar prompt usando o GPT
+- Retornar resultado de um prompt executado
