@@ -341,12 +341,14 @@ async function cleanUpParsedResults(parsedResults) {
 (async () => {
   const startTime = new Date();
   console.log(`Iniciando scraping em ${startTime.getHours()}:${startTime.getMinutes()}:${startTime.getSeconds()}`)
-  const browser = await pup.launch();
+  const browser = await pup.launch({headless:false});
   const page = await browser.newPage();
 
   const jobName = encodeURIComponent(argv['job-name']);
   const jobLocation = encodeURIComponent(argv['job-location']);
   const jobType = encodeURIComponent(argv['job-type']);
+
+  console.log(`Parametros recebidos e seus tipos: ${jobName} | ${typeof jobName} | ${jobLocation} | ${typeof jobLocation}| ${jobType} | ${typeof jobType} | `)
 
   // Defina o tamanho da tela visível, por exemplo, 1200x800 pixels
   await page.setViewport({ width: 1359, height: 947 });
@@ -358,7 +360,7 @@ async function cleanUpParsedResults(parsedResults) {
 
   const ulXPathSelector = await findAllChildrenByXpath(page, '//*[@id="main-content"]/section[2]/ul/li')
 
-  const rawOutput = await parseLiItems(page, 200);
+  const rawOutput = await parseLiItems(page, 2);
 
   console.log('Jobs coletados',rawOutput.length);
 

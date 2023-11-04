@@ -39,10 +39,10 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
 
 ### Requisitos API
 - Pegar todos os jobs (OK)
-- Adicionar um job
-- Editar um job
-- Excluir um job
-- Rodar o scraper
-- Receber input de perfil de usuário (currículo e dados do currículo)
+- Adicionar um job (OK)
+- Editar um job (OK)
+- Excluir um job (OK)
+- Rodar o scraper (OK) | Revisar o mecanismo
+- Receber input de perfil de usuário (currículo e dados do currículo) | Estudar como fazer a separação dessas informações
 - Executar prompt usando o GPT
 - Retornar resultado de um prompt executado
