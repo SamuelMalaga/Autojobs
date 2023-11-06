@@ -73,24 +73,24 @@ class Certification(models.Model):
     def __str__(self):
         return f"{self.cert_user} - {self.cert_name}"
 
-# class Application(models.Model):
-#     APPL_STATUSES = [
-#         ('Screening', 'Triagem'),
-#         ('Interview', 'Entrevista'),
-#         ('Technical Interview', 'Entrevista técnica'),
-#         ('Inital interview', 'Entrevista inicial'),
-#         ('Techincal Assessment', 'Desafio técnico'),
-#         ('Proposal', 'Proposta'),
-#         ('Cancelled', 'Cancelada')
-#         # Adicione mais opções conforme necessário
-#     ]
+class Application(models.Model):
+    APPL_STATUSES = [
+        ('Screening', 'Triagem'),
+        ('Interview', 'Entrevista'),
+        ('Technical Interview', 'Entrevista técnica'),
+        ('Inital interview', 'Entrevista inicial'),
+        ('Techincal Assessment', 'Desafio técnico'),
+        ('Proposal', 'Proposta'),
+        ('Cancelled', 'Cancelada')
+        # Adicione mais opções conforme necessário
+    ]
 
-#     appl_status = models.CharField(max_length=20, choices=APPL_STATUSES)
-#     appl_closed_at = models.DateTimeField()
-#     appl_started_at = models.DateTimeField()
-#     #appl_job = models.ForeignKey(Job, on_delete=models.PROTECT)
-#     appl_user = models.ForeignKey(User, on_delete=models.PROTECT)
-#     appl_resume = models.FileField(upload_to='media/uploads/')
+    appl_status = models.CharField(max_length=20, choices=APPL_STATUSES)
+    appl_closed_at = models.DateTimeField()
+    appl_started_at = models.DateTimeField()
+    #appl_job = models.ForeignKey(Job, on_delete=models.PROTECT)
+    appl_user = models.ForeignKey(User, on_delete=models.PROTECT)
+    appl_resume = models.FileField(upload_to='media/uploads/')
 
 
 
