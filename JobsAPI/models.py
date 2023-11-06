@@ -2,20 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Job(models.Model):
-    job_id = models.AutoField(primary_key=True, db_column='job_id')
-    job_title = models.TextField(blank=True, null=True)
-    company_name = models.TextField(blank=True, null=True)
-    job_link = models.TextField(blank=True, null=True)
-    job_description = models.TextField(blank=True, null=True)
-    double_check = models.BooleanField(db_column='double_check', blank=True, null=True)  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'jobs'
-
+    job_id = models.IntegerField(null=True)
+    job_title = models.TextField(null=True)
+    company_name = models.TextField(null=True)
+    job_link = models.TextField()
+    job_description = models.TextField(null=True)
+    double_check = models.BooleanField(null=True)
+    source = models.TextField(null=True)
 
     def __str__(self):
-        return f"{self.job_title} - {self.job_id}"
+        return self.job_title
+
 
 class WorkExperience(models.Model):
     # Opções para o campo 'exp_type'
@@ -88,7 +85,7 @@ class Application(models.Model):
     appl_status = models.CharField(max_length=20, choices=APPL_STATUSES)
     appl_closed_at = models.DateTimeField()
     appl_started_at = models.DateTimeField()
-    #appl_job = models.ForeignKey(Job, on_delete=models.PROTECT)
+    appl_job = models.ForeignKey(Job, on_delete=models.PROTECT, null=True)
     appl_user = models.ForeignKey(User, on_delete=models.PROTECT)
     appl_resume = models.FileField(upload_to='media/uploads/')
 

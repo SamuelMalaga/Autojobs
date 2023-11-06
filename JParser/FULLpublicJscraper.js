@@ -160,8 +160,8 @@ async function insertJobsIntoDatabase(databaseName, jobs) {
   const db = new sqlite3.Database(databaseName);
 
   const insertJobQuery = `
-      INSERT INTO jobs (job_id, job_title, company_name, job_link, job_description, double_check)
-      VALUES (?, ?, ?, ?, ?, ?);
+      INSERT INTO JobsAPI_job (job_id, job_title, company_name, job_link, job_description, double_check, source)
+      VALUES (?, ?, ?, ?, ?, ?, ?);
   `;
 
   jobs.forEach((job) => {
@@ -171,7 +171,8 @@ async function insertJobsIntoDatabase(databaseName, jobs) {
           job.company_name,
           job.job_link,
           job.job_description,
-          job.double_Check
+          job.double_Check,
+          "linkedin"
       ], (err) => {
           if (!err) {
               console.log(`Inserido(veio do jobs): ${job.job_title}`);
@@ -220,7 +221,7 @@ async function parseLiItems(page, maxItens) {
     const numberOfLis = await findAllChildrenByXpath(page, '//*[@id="main-content"]/section[2]/ul/li')
     liIndex = itensColetados + 1
     //
-    console.log('valor LIiNDEX' ,liIndex)
+    //console.log('valor LIiNDEX' ,liIndex)
     if(liIndex === numberOfLis.length){
       break
     }
@@ -302,7 +303,7 @@ async function cleanUpParsedResults(parsedResults) {
     if (text !== null) {
       text = text.replace(/\n/g, '').replace(/\s+/g, ' ').trim();
 
-      console.log('veio do cleantext',text)
+      //console.log('veio do cleantext',text)
       return text
     } else {
       // Lida com o caso em que 'text' é nulo, se necessário.
@@ -360,7 +361,7 @@ async function cleanUpParsedResults(parsedResults) {
 
   const ulXPathSelector = await findAllChildrenByXpath(page, '//*[@id="main-content"]/section[2]/ul/li')
 
-  const rawOutput = await parseLiItems(page, 2);
+  const rawOutput = await parseLiItems(page, 200);
 
   console.log('Jobs coletados',rawOutput.length);
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Job, WorkExperience, Education, Language, Certification, Application
+from .models import  WorkExperience, Education, Language, Certification, Application,Job
 
 admin.site.register(Job)
 admin.site.register(WorkExperience)
