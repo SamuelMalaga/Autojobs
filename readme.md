@@ -38,12 +38,66 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
 - Diagrama de classes
 
 ### Requisitos API
-- Pegar todos os jobs (OK)
-- Adicionar um job (OK)
-- Editar um job (OK)
-- Excluir um job (OK)
-- Rodar o scraper (OK) | Revisar o mecanismo
-- Receber input de perfil de usuário (currículo e dados do currículo) | Estudar como fazer a separação dessas informações ---> 4 tabelas, Work_experiece (OK), education (ok), LANGUAGES (tabela simples) (OK), certifications (OK - Implementado sem o campo para armazenamento de certificados), implementar classe de usuário para receber novas colunas (Bio, country e city) (TODO), Relacionar os dados de jobs e usuários (via tabela applications)
-- Endpoints e urls para alterações de todas os models acima
-- Executar prompt usando o GPT
-- Retornar resultado de um prompt executado
+- Configurar tabelas:
+  - Lista de tabelas:
+    - JobsAPI_application:
+      - Status: OK
+      - Descrição: tabela de relacionamento entre user e job, será o model principal iterado pelo front e com capacidade de armazenar os currículos gerados para cada vaga
+    - JobsAPI_certification:
+      - Status: OK
+      - Descrição:
+    - JobsAPI_job:
+      - Status: OK
+      - Descrição:
+    - JobsAPI_education:
+      - Status: OK
+      - Descrição:
+    - JobsAPI_language:
+      - Status: OK
+      - Descrição:
+    - JobsAPI_workexperience:
+      - Status: OK
+      - Descrição:
+    - Extensão da tabela usuário para adição das informações de country, city e bio:
+      - Status: OK, ao invés de criar uma extensão da classe user padrão do django, foi criada uma tabela chamada userProfile com relação de 1 pra 1 com User, pode ser que futuramente seja necessário alterar
+      - Descrição:
+- Endpoints e urls para alterações de todas os models acima:
+  - Lista de models para serem manipulados via views:
+    - Application:
+      - GET
+      - SET
+      - UPDATE
+      - DELETE
+    - Certification:
+      - GET
+      - SET
+      - UPDATE
+      - DELETE
+    - Job
+      - job_list: OK
+      - job_details:
+        - GET: OK
+        - PUT: OK
+        - DELETE: OK
+    - Education:
+      - GET
+      - SET
+      - UPDATE
+      - DELETE
+    - Language:
+      - GET
+      - SET
+      - UPDATE
+      - DELETE
+    - Workexperience:
+      - GET
+      - SET
+      - UPDATE
+      - DELETE
+    - SCRAPER:
+      - Execute scraper assíncrono, pesquisar django channel ou celery
+- Integração com GPT:
+  - Executar prompt usando o GPT
+  - Retornar resultado de um prompt executado
+  - Caso o uso de GPT seja custoso/caro, é necessário mudar a proposta para sugerir possíveis prompts e geração de pdf
+- Geração de PDF's (currículos)

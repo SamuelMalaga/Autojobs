@@ -89,6 +89,12 @@ class Application(models.Model):
     appl_user = models.ForeignKey(User, on_delete=models.PROTECT)
     appl_resume = models.FileField(upload_to='media/uploads/')
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
+    country = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+
 
 
 
