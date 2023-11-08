@@ -1,11 +1,14 @@
 import subprocess
 from django.http import JsonResponse
-from .models import Job
-from .serializers import JobSerializer
+from .models import Job, Application, Certification, Education,Language,WorkExperience
+from .serializers import JobSerializer, ApplicationSerializer, CertificationSerializer, EducationSerializer, LanguageSerializer, WorkExperienceSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
+# ---------------------------------------------------------------
+# <---                  Job Related Views                    --->
+# ---------------------------------------------------------------
 @api_view(['GET','POST'])
 def job_list(request):
   if request.method =='GET':
@@ -24,7 +27,6 @@ def job_detail(request,id):
     job = Job.objects.get(pk=id)
   except Job.DoesNotExist:
     return Response(status=status.HTTP_404_NOT_FOUND)
-
   if request.method =='GET':
     serializer = JobSerializer(job)
     return Response(serializer.data)
@@ -38,6 +40,9 @@ def job_detail(request,id):
     job.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+# ---------------------------------------------------------------
+# <---                Scraper Related Views                  --->
+# ---------------------------------------------------------------
 @api_view(['POST'])
 def execute_scraper(request):
     # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
@@ -62,3 +67,173 @@ def execute_scraper(request):
             return JsonResponse({'message': 'Erro na execução do script', 'error_output': result.stderr}, status=500)
     except Exception as e:
         return JsonResponse({'message': 'Erro na execução do script', 'error_message': str(e)}, status=500)
+
+# ---------------------------------------------------------------
+# <---              Application Related Views                --->
+# ---------------------------------------------------------------
+@api_view(['GET','POST'])
+def application_list(request):
+  if request.method =='GET':
+    applications = Application.objects.all()
+    serializer = ApplicationSerializer(applications, many=True)
+    return Response(serializer.data)
+  if request.method == 'POST':
+    serializer = ApplicationSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def application_detail(request,id):
+  try:
+    application = Application.objects.get(pk=id)
+  except Application.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)
+  if request.method =='GET':
+    serializer = ApplicationSerializer(application)
+    return Response(serializer.data)
+  elif request.method == 'PUT':
+    serializer = ApplicationSerializer(application, data=request.data, partial=True)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  elif request.method == 'DELETE':
+    application.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ---------------------------------------------------------------
+# <---              Certification Related Views              --->
+# ---------------------------------------------------------------
+@api_view(['GET','POST'])
+def certification_list(request):
+  if request.method =='GET':
+    certifications = Certification.objects.all()
+    serializer = CertificationSerializer(certifications, many=True)
+    return Response(serializer.data)
+  if request.method == 'POST':
+    serializer = CertificationSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def certification_detail(request,id):
+  try:
+    certification = Certification.objects.get(pk=id)
+  except Certification.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)
+  if request.method =='GET':
+    serializer = CertificationSerializer(certification)
+    return Response(serializer.data)
+  elif request.method == 'PUT':
+    serializer = CertificationSerializer(certification, data=request.data, partial=True)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  elif request.method == 'DELETE':
+    certification.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ---------------------------------------------------------------
+# <---               Education Related Views                 --->
+# ---------------------------------------------------------------
+@api_view(['GET','POST'])
+def education_list(request):
+  if request.method =='GET':
+    educations = Education.objects.all()
+    serializer = EducationSerializer(educations, many=True)
+    return Response(serializer.data)
+  if request.method == 'POST':
+    serializer = EducationSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def education_detail(request,id):
+  try:
+    education = Education.objects.get(pk=id)
+  except Education.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)
+  if request.method =='GET':
+    serializer = EducationSerializer(education)
+    return Response(serializer.data)
+  elif request.method == 'PUT':
+    serializer = EducationSerializer(education, data=request.data, partial=True)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  elif request.method == 'DELETE':
+    education.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ---------------------------------------------------------------
+# <---                Language Related Views                 --->
+# ---------------------------------------------------------------
+@api_view(['GET','POST'])
+def language_list(request):
+  if request.method =='GET':
+    languages = Language.objects.all()
+    serializer = LanguageSerializer(languages, many=True)
+    return Response(serializer.data)
+  if request.method == 'POST':
+    serializer = LanguageSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def language_detail(request,id):
+  try:
+    language = Language.objects.get(pk=id)
+  except Language.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)
+  if request.method =='GET':
+    serializer = LanguageSerializer(language)
+    return Response(serializer.data)
+  elif request.method == 'PUT':
+    serializer = LanguageSerializer(language, data=request.data, partial=True)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  elif request.method == 'DELETE':
+    language.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ---------------------------------------------------------------
+# <---                WorkExperience Related Views           --->
+# ---------------------------------------------------------------
+@api_view(['GET','POST'])
+def work_experience_list(request):
+  if request.method =='GET':
+    work_experiences = WorkExperience.objects.all()
+    serializer = WorkExperienceSerializer(work_experiences, many=True)
+    return Response(serializer.data)
+  if request.method == 'POST':
+    serializer = WorkExperienceSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def work_experience_detail(request,id):
+  try:
+    work_experience = WorkExperience.objects.get(pk=id)
+  except Language.DoesNotExist:
+    return Response(status=status.HTTP_404_NOT_FOUND)
+  if request.method =='GET':
+    serializer = WorkExperienceSerializer(work_experience)
+    return Response(serializer.data)
+  elif request.method == 'PUT':
+    serializer = WorkExperienceSerializer(work_experience, data=request.data, partial=True)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  elif request.method == 'DELETE':
+    work_experience.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

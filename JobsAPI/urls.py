@@ -20,7 +20,24 @@ from JobsAPI import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # <-----Job related urls----->
     path('jobs/', views.job_list),
     path('jobs/<int:id>', views.job_detail),
-    path('execute-scraper/', views.execute_scraper, name='execute_scraper')
+    # <-----Scraper related urls----->
+    path('execute-scraper/', views.execute_scraper, name='execute_scraper'),
+    # <-----Application related urls----->
+    path('applications/', views.application_list),
+    path('applications/<int:id>', views.application_detail),
+    # <-----Certification related urls----->
+    path('certifications/', views.certification_list),
+    path('certifications/<int:id>', views.certification_detail),
+    # <-----Education related urls----->
+    path('educations/', views.education_list),
+    path('educations/<int:id>', views.education_detail),
+    # <-----Language related urls----->
+    path('languages/', views.language_list),
+    path('languages/<int:id>', views.language_detail),
+    # <-----WorkExperience related urls----->
+    path('work_experiences/', views.work_experience_list),
+    path('work_experiences/<int:id>', views.work_experience_detail)
 ]

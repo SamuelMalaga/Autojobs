@@ -63,38 +63,39 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
       - Descrição:
 - Endpoints e urls para alterações de todas os models acima:
   - Lista de models para serem manipulados via views:
-    - Application:
+    - Application: OK
+      - Get all:
+      - GET OK
+      - UPDATE OK
+      - DELETE OK
+    - Certification: OK
+      - Get all:
       - GET
       - SET
       - UPDATE
       - DELETE
-    - Certification:
-      - GET
-      - SET
-      - UPDATE
-      - DELETE
-    - Job
+    - Job OK
       - job_list: OK
       - job_details:
         - GET: OK
         - PUT: OK
         - DELETE: OK
-    - Education:
+    - Education OK:
       - GET
       - SET
       - UPDATE
       - DELETE
-    - Language:
+    - Language OK:
       - GET
       - SET
       - UPDATE
       - DELETE
-    - Workexperience:
+    - Workexperience :
       - GET
       - SET
       - UPDATE
       - DELETE
-    - SCRAPER:
+    - SCRAPER: OK
       - Execute scraper assíncrono, pesquisar django channel ou celery
 - Integração com GPT:
   - Executar prompt usando o GPT
