@@ -90,15 +90,21 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
       - SET
       - UPDATE
       - DELETE
-    - Workexperience :
+    - Workexperience OK:
       - GET
       - SET
       - UPDATE
       - DELETE
     - SCRAPER: OK
       - Execute scraper assíncrono, pesquisar django channel ou celery
-- Integração com GPT:
+- Integração com GPT (Fica pra V2):
   - Executar prompt usando o GPT
   - Retornar resultado de um prompt executado
   - Caso o uso de GPT seja custoso/caro, é necessário mudar a proposta para sugerir possíveis prompts e geração de pdf
-- Geração de PDF's (currículos)
+- Geração de PDF's (currículos) (Entra na v1 porém só depois do front)
+
+### Requisitos Front End
+- Login? (estudar se é necessário nessa primeira implementação do front - Provável que sim)
+- Página/formulários para CRUD das informações do currículo
+- Página para gerenciamneto dos jobs para os quais eu me apliquei (JobTracker)
+- Feature para cadastro de um job via link (Implica na criação de um parser executável que recebe um link específico)
