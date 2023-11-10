@@ -105,6 +105,26 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
 
 ### Requisitos Front End
 - Login? (estudar se é necessário nessa primeira implementação do front - Provável que sim)
-- Página/formulários para CRUD das informações do currículo
-- Página para gerenciamneto dos jobs para os quais eu me apliquei (JobTracker)
-- Feature para cadastro de um job via link (Implica na criação de um parser executável que recebe um link específico)
+- My Resumé: Página/formulários para CRUD das informações do currículo
+  - Features:
+    - CRUD experiências de trabalho
+    - CRUD cursos/educações/projetos
+    - CRUD linguagens
+    - CRUD Certificações
+    - CRUD Informações extras do perfil
+    - Gerar Relatório?
+- Job Tracker: Página para gerenciamneto dos jobs para os quais eu me apliquei (JobTracker)
+  - Features:
+    - Kanban View das applications:
+      - Nessa página, uma visão de boards kanban seria o ideal, podendo arrastar de um lado para o outro e mudar o status de cada aplicação por meio dessa ação
+      - Colunas:
+        - Screening
+        - Interview
+        - Technical Interview
+        - Inital interview
+        - Techincal Assessment
+        - Proposal
+        - Cancelled
+    - Botão/Form para adicionar um job via Link do linkedin:
+      - Essa feature implica em uma execução do scraper pela API passando parametros e talvez seja assíncrona
+- Dashboards: Página com análises de aproveitamento das aplicações, serve para entender bottlenecks, statuses e alguns pontos fracos de candidaturas e etc...
