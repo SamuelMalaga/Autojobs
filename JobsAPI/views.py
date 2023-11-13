@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
 
@@ -249,17 +250,31 @@ def work_experience_detail(request,id):
 # ---------------------------------------------------------------
 # <---                  Auth Related Views                   --->
 # ---------------------------------------------------------------
+
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
+
         user = authenticate(username=username, password=password)
 
         if user:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            refresh = RefreshToken.for_user(user)
+            return Response({'access_token': str(refresh.access_token)}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+
+# class LoginView(APIView):
+#     def post(self, request):
+#         username = request.data.get('username')
+#         password = request.data.get('password')
+#         user = authenticate(username=username, password=password)
+
+#         if user:
+#             token, created = Token.objects.get_or_create(user=user)
+#             return Response({'token': token.key}, status=status.HTTP_200_OK)
+#         else:
+#             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutView(APIView):
     authentication_classes = [TokenAuthentication]

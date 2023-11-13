@@ -1,0 +1,61 @@
+<template>
+  <section class="section is-small">
+    <div class="container is-small">
+      <h1 class="title">Log In</h1>
+      <div class="notification ">
+        <div class="field">
+          <p class="control">
+            <h2 class="subtitle"><label for="username">Username/Email</label></h2>
+            <input class="input" type="text" v-model="username" placeholder="Email/Username" required>
+          </p>
+        </div>
+        <div class="field">
+          <p class="control">
+            <h2 class="subtitle"><label for="password">Password</label></h2>
+            <input class="input" type="password" v-model="password" placeholder="Password" required>
+          </p>
+        </div>
+      </div>
+      <button class="button" @click="login">Log-in</button>
+    </div>
+  </section>
+</template>
+
+<script>
+import axios from 'axios';
+import { parseJwt } from '@/utils';
+
+
+export default {
+  data() {
+    return {
+      username: '',
+      password: '',
+    };
+  },
+  methods: {
+    async login() {
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/login/', {
+          username: this.username,
+          password: this.password,
+        });
+
+        // Armazene o token retornado (se aplicável) e realize ações necessárias após o login
+        const token = response.data.access_token;
+        // Armazene o token no localStorage ou em outro local seguro
+        localStorage.setItem('token', token);
+        console.log(token)
+        const userId = parseJwt(token).user_id;
+        console.log(userId);
+        this.$router.push('/myProfile');
+
+        // Redirecione para outra página ou faça outras ações após o login bem-sucedido
+      } catch (error) {
+        // Trate erros de login, exiba mensagens de erro, etc.
+        console.error('Erro durante o login:', error);
+      }
+    },
+  },
+};
+</script>
