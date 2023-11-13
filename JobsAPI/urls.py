@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from JobsAPI import views
+from .views import LoginView,LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,5 +40,8 @@ urlpatterns = [
     path('languages/<int:id>', views.language_detail),
     # <-----WorkExperience related urls----->
     path('work_experiences/', views.work_experience_list),
-    path('work_experiences/<int:id>', views.work_experience_detail)
+    path('work_experiences/<int:id>', views.work_experience_detail),
+    # <-----Auth Related related urls----->
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]

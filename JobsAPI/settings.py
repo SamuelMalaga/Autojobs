@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'JobsAPI',
     'rest_framework',
-    'corsheaders'
+    #VueJs Enabler
+    'corsheaders',
+    ##Auth
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -72,6 +75,15 @@ TEMPLATES = [
         },
     },
 ]
+
+##Auth
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
 
 WSGI_APPLICATION = 'JobsAPI.wsgi.application'
 

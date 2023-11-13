@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Job, Application, Certification, Education,Language,WorkExperience
+from .models import Job, Application, Certification, Education,Language,WorkExperience, User
 
 class JobSerializer(serializers.ModelSerializer):
   class Meta:
@@ -30,4 +30,13 @@ class WorkExperienceSerializer(serializers.ModelSerializer):
   class Meta:
     model = WorkExperience
     fields = ['exp_company','exp_description','exp_start_time','exp_end_time','exp_user','id']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+
 
