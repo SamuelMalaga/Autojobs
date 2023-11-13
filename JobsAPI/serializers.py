@@ -29,5 +29,5 @@ class LanguageSerializer(serializers.ModelSerializer):
 class WorkExperienceSerializer(serializers.ModelSerializer):
   class Meta:
     model = WorkExperience
-    fields = ['exp_company','exp_description','exp_start_time','exp_end_time','exp_user']
+    fields = ['exp_company','exp_description','exp_start_time','exp_end_time','exp_user','id']
 
