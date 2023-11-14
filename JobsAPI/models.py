@@ -28,7 +28,7 @@ class WorkExperience(models.Model):
     exp_description = models.TextField()
     exp_start_time = models.DateTimeField()
     exp_end_time = models.DateTimeField()
-    exp_user = models.ForeignKey(User, on_delete=models.PROTECT)  # Chave estrangeira para o modelo User
+    exp_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)  # Chave estrangeira para o modelo User
 
     def __str__(self):
         return f"{self.exp_user} - {self.exp_company}"
@@ -39,7 +39,7 @@ class Education(models.Model):
     edu_description = models.TextField()
     edu_start_time = models.DateTimeField()
     edu_end_time = models.DateTimeField()
-    edu_user = models.ForeignKey(User, on_delete=models.PROTECT)  # Chave estrangeira para o modelo User
+    edu_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)  # Chave estrangeira para o modelo User
 
 
 class Language(models.Model):
@@ -56,7 +56,7 @@ class Language(models.Model):
     lng_name = models.CharField(max_length=100)
     lng_country = models.TextField()
     lng_proficiency_level = models.CharField(max_length=10, choices=LNG_LEVEL_OPTIONS)
-    lng_user = models.ForeignKey(User, on_delete=models.PROTECT)  # Chave estrangeira para o modelo User
+    lng_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
 
 class Certification(models.Model):
@@ -65,7 +65,7 @@ class Certification(models.Model):
     cert_institute = models.CharField(max_length=100)
     cert_emmited_at = models.DateTimeField()
     cert_valid_until = models.DateTimeField()
-    cert_user = models.ForeignKey(User, on_delete=models.PROTECT)
+    cert_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return f"{self.cert_user} - {self.cert_name}"

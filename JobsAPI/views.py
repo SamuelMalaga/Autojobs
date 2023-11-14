@@ -5,6 +5,9 @@ from .serializers import JobSerializer, ApplicationSerializer, CertificationSeri
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 # Auth Views
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
@@ -145,6 +148,23 @@ def certification_detail(request,id):
     certification.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['POST'])
+def create_user_certification(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+
+    if request.method == 'POST':
+        # Certifique-se de passar o contexto para o serializer
+        serializer = CertificationSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            # Adicione o usuário à instância do serializer
+            serializer.validated_data['cert_user'] = user
+            instance = serializer.save()
+
+            data = CertificationSerializer(instance).data
+            return Response(data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # ---------------------------------------------------------------
 # <---               Education Related Views                 --->
 # ---------------------------------------------------------------
@@ -178,6 +198,24 @@ def education_detail(request,id):
   elif request.method == 'DELETE':
     education.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def create_user_education(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+
+    if request.method == 'POST':
+        # Certifique-se de passar o contexto para o serializer
+        serializer = EducationSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            # Adicione o usuário à instância do serializer
+            serializer.validated_data['edu_user'] = user
+            instance = serializer.save()
+
+            data = EducationSerializer(instance).data
+            return Response(data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # ---------------------------------------------------------------
 # <---                Language Related Views                 --->
@@ -213,6 +251,24 @@ def language_detail(request,id):
     language.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['POST'])
+def create_user_language(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+
+    if request.method == 'POST':
+        # Certifique-se de passar o contexto para o serializer
+        serializer = LanguageSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            # Adicione o usuário à instância do serializer
+            serializer.validated_data['lng_user'] = user
+            instance = serializer.save()
+
+            data = LanguageSerializer(instance).data
+            return Response(data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 # ---------------------------------------------------------------
 # <---                WorkExperience Related Views           --->
 # ---------------------------------------------------------------
@@ -247,10 +303,26 @@ def work_experience_detail(request,id):
     work_experience.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['POST'])
+def create_user_work_experience(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+
+    if request.method == 'POST':
+        # Certifique-se de passar o contexto para o serializer
+        serializer = WorkExperienceSerializer(data=request.data, context={'request': request})
+
+        if serializer.is_valid():
+            # Adicione o usuário à instância do serializer
+            serializer.validated_data['exp_user'] = user
+            instance = serializer.save()
+
+            data = WorkExperienceSerializer(instance).data
+            return Response(data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # ---------------------------------------------------------------
 # <---                  Auth Related Views                   --->
 # ---------------------------------------------------------------
-
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -263,18 +335,6 @@ class LoginView(APIView):
             return Response({'access_token': str(refresh.access_token)}, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-
-# class LoginView(APIView):
-#     def post(self, request):
-#         username = request.data.get('username')
-#         password = request.data.get('password')
-#         user = authenticate(username=username, password=password)
-
-#         if user:
-#             token, created = Token.objects.get_or_create(user=user)
-#             return Response({'token': token.key}, status=status.HTTP_200_OK)
-#         else:
-#             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutView(APIView):
     authentication_classes = [TokenAuthentication]

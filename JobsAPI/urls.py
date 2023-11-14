@@ -32,15 +32,19 @@ urlpatterns = [
     # <-----Certification related urls----->
     path('certifications/', views.certification_list),
     path('certifications/<int:id>', views.certification_detail),
+    path('users/<int:user_id>/certifications/create/', views.create_user_certification),
     # <-----Education related urls----->
     path('educations/', views.education_list),
     path('educations/<int:id>', views.education_detail),
+    path('users/<int:user_id>/educations/create/', views.create_user_education),
     # <-----Language related urls----->
     path('languages/', views.language_list),
     path('languages/<int:id>', views.language_detail),
+    path('users/<int:user_id>/languages/create/', views.create_user_language),
     # <-----WorkExperience related urls----->
     path('work_experiences/', views.work_experience_list),
     path('work_experiences/<int:id>', views.work_experience_detail),
+    path('users/<int:user_id>/work_experiences/create/', views.create_user_work_experience),
     # <-----Auth Related related urls----->
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
