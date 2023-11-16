@@ -84,9 +84,9 @@ def execute_scraper(request):
 # <---              Application Related Views                --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
-def application_list(request):
+def application_list(request,user_id):
   if request.method =='GET':
-    applications = Application.objects.all()
+    applications = Application.objects.filter(appl_user=user_id)
     serializer = ApplicationSerializer(applications, many=True)
     return Response(serializer.data)
   if request.method == 'POST':
@@ -96,9 +96,9 @@ def application_list(request):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def application_detail(request,id):
+def application_detail(request,user_id,appl_id):
   try:
-    application = Application.objects.get(pk=id)
+    application = Application.objects.get(appl_user=user_id,pk=appl_id)
   except Application.DoesNotExist:
     return Response(status=status.HTTP_404_NOT_FOUND)
   if request.method =='GET':
@@ -114,13 +114,32 @@ def application_detail(request,id):
     application.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['POST'])
+def create_user_application(request, user_id):
+    user = get_object_or_404(User, pk=user_id)
+
+    if request.method == 'POST':
+        # Certifique-se de passar o contexto para o serializer
+        serializer = ApplicationSerializer(data=request.data, context={'request': request})
+
+        # print('user_id',user.id)
+
+        if serializer.is_valid():
+            # Adicione o usuário à instância do serializer
+            serializer.validated_data['appl_user'] = user
+            print('serializer Data',serializer.validated_data)
+            instance = serializer.save()
+            data = ApplicationSerializer(instance).data
+            return Response(data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # ---------------------------------------------------------------
 # <---              Certification Related Views              --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
-def certification_list(request):
+def certification_list(request,user_id):
   if request.method =='GET':
-    certifications = Certification.objects.all()
+    certifications = Certification.objects.filter(cert_user=user_id)
     serializer = CertificationSerializer(certifications, many=True)
     return Response(serializer.data)
   if request.method == 'POST':
@@ -130,9 +149,9 @@ def certification_list(request):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def certification_detail(request,id):
+def certification_detail(request,user_id,cert_id):
   try:
-    certification = Certification.objects.get(pk=id)
+    certification = Certification.objects.get(cert_user=user_id,pk=cert_id)
   except Certification.DoesNotExist:
     return Response(status=status.HTTP_404_NOT_FOUND)
   if request.method =='GET':
@@ -169,9 +188,9 @@ def create_user_certification(request, user_id):
 # <---               Education Related Views                 --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
-def education_list(request):
+def education_list(request,user_id):
   if request.method =='GET':
-    educations = Education.objects.all()
+    educations = Education.objects.filter(edu_user=user_id)
     serializer = EducationSerializer(educations, many=True)
     return Response(serializer.data)
   if request.method == 'POST':
@@ -181,9 +200,9 @@ def education_list(request):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def education_detail(request,id):
+def education_detail(request,user_id,edu_id):
   try:
-    education = Education.objects.get(pk=id)
+    education = Education.objects.get(edu_user=user_id,pk=edu_id)
   except Education.DoesNotExist:
     return Response(status=status.HTTP_404_NOT_FOUND)
   if request.method =='GET':
@@ -221,9 +240,9 @@ def create_user_education(request, user_id):
 # <---                Language Related Views                 --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
-def language_list(request):
+def language_list(request,user_id):
   if request.method =='GET':
-    languages = Language.objects.all()
+    languages = Language.objects.filter(lng_user=user_id)
     serializer = LanguageSerializer(languages, many=True)
     return Response(serializer.data)
   if request.method == 'POST':
@@ -233,9 +252,9 @@ def language_list(request):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def language_detail(request,id):
+def language_detail(request,user_id,lng_id):
   try:
-    language = Language.objects.get(pk=id)
+    language = Language.objects.get(lng_user=user_id,pk=lng_id)
   except Language.DoesNotExist:
     return Response(status=status.HTTP_404_NOT_FOUND)
   if request.method =='GET':
@@ -273,9 +292,9 @@ def create_user_language(request, user_id):
 # <---                WorkExperience Related Views           --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
-def work_experience_list(request):
+def work_experience_list(request,user_id):
   if request.method =='GET':
-    work_experiences = WorkExperience.objects.all()
+    work_experiences = WorkExperience.objects.filter(exp_user=user_id)
     serializer = WorkExperienceSerializer(work_experiences, many=True)
     return Response(serializer.data)
   if request.method == 'POST':
@@ -285,9 +304,9 @@ def work_experience_list(request):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def work_experience_detail(request,id):
+def work_experience_detail(request,user_id,exp_id):
   try:
-    work_experience = WorkExperience.objects.get(pk=id)
+    work_experience = WorkExperience.objects.get(exp_user=user_id,pk=exp_id)
   except Language.DoesNotExist:
     return Response(status=status.HTTP_404_NOT_FOUND)
   if request.method =='GET':

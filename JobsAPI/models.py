@@ -86,7 +86,7 @@ class Application(models.Model):
     appl_closed_at = models.DateTimeField()
     appl_started_at = models.DateTimeField()
     appl_job = models.ForeignKey(Job, on_delete=models.PROTECT, null=True)
-    appl_user = models.ForeignKey(User, on_delete=models.PROTECT)
+    appl_user = models.ForeignKey(User, on_delete=models.PROTECT,null=True)
     appl_resume = models.FileField(upload_to='media/uploads/', null=True, blank=True, default=None)
 
 class UserProfile(models.Model):

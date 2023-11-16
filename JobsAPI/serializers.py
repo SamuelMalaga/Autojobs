@@ -11,7 +11,6 @@ class ApplicationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Application
     fields = '__all__'
-    #['appl_status','appl_closed_at','appl_started_at','appl_resume','appl_user_id','appl_job_id']
 
 class CertificationSerializer(serializers.ModelSerializer):
   class Meta:

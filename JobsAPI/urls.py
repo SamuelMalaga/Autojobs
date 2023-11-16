@@ -27,23 +27,24 @@ urlpatterns = [
     # <-----Scraper related urls----->
     path('execute-scraper/', views.execute_scraper, name='execute_scraper'),
     # <-----Application related urls----->
-    path('applications/', views.application_list),
-    path('applications/<int:id>', views.application_detail),
+    path('users/<int:user_id>/applications/', views.application_list),
+    path('users/<int:user_id>/applications/<int:appl_id>', views.application_detail),
+    path('users/<int:user_id>/applications/create/', views.create_user_application),
     # <-----Certification related urls----->
-    path('certifications/', views.certification_list),
-    path('certifications/<int:id>', views.certification_detail),
+    path('users/<int:user_id>/certifications/', views.certification_list),
+    path('users/<int:user_id>/certifications/<int:cert_id>', views.certification_detail),
     path('users/<int:user_id>/certifications/create/', views.create_user_certification),
     # <-----Education related urls----->
-    path('educations/', views.education_list),
-    path('educations/<int:id>', views.education_detail),
+    path('users/<int:user_id>/educations/', views.education_list),
+    path('users/<int:user_id>/educations/<int:edu_id>', views.education_detail),
     path('users/<int:user_id>/educations/create/', views.create_user_education),
     # <-----Language related urls----->
-    path('languages/', views.language_list),
-    path('languages/<int:id>', views.language_detail),
+    path('users/<int:user_id>/languages/', views.language_list),
+    path('users/<int:user_id>/languages/<int:lng_id>', views.language_detail),
     path('users/<int:user_id>/languages/create/', views.create_user_language),
     # <-----WorkExperience related urls----->
-    path('work_experiences/', views.work_experience_list),
-    path('work_experiences/<int:id>', views.work_experience_detail),
+    path('users/<int:user_id>/work_experiences/', views.work_experience_list),
+    path('users/<int:user_id>/work_experiences/<int:exp_id>', views.work_experience_detail),
     path('users/<int:user_id>/work_experiences/create/', views.create_user_work_experience),
     # <-----Auth Related related urls----->
     path('login/', LoginView.as_view(), name='login'),
