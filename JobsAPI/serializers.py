@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Job, Application, Certification, Education,Language,WorkExperience, User
+from .models import Job, Application, Certification, Education,Language,WorkExperience, User, UserProfile
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class JobSerializer(serializers.ModelSerializer):
   class Meta:
@@ -42,5 +43,21 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
+class UserProfileSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = UserProfile
+    fields = '__all__'
 
 
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = User.objects.get(username=attrs['username'])
+
+        # Inclua as informações adicionais no token
+        data['user_id'] = user.id
+        data['first_name'] = user.first_name
+        data['last_name'] = user.last_name
+        data['email'] = user.email
+
+        return data

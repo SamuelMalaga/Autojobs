@@ -1,7 +1,7 @@
 import subprocess
 from django.http import JsonResponse
-from .models import Job, Application, Certification, Education,Language,WorkExperience
-from .serializers import JobSerializer, ApplicationSerializer, CertificationSerializer, EducationSerializer, LanguageSerializer, WorkExperienceSerializer
+from .models import Job, Application, Certification, Education,Language,WorkExperience,UserProfile
+from .serializers import JobSerializer, ApplicationSerializer, CertificationSerializer, EducationSerializer, LanguageSerializer, WorkExperienceSerializer, UserProfileSerializer,CustomTokenObtainPairSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -412,6 +412,18 @@ def create_user_work_experience(request, user_id):
 # ---------------------------------------------------------------
 # <---                  Auth Related Views                   --->
 # ---------------------------------------------------------------
+# class LoginView(APIView):
+#     def post(self, request):
+#         username = request.data.get('username')
+#         password = request.data.get('password')
+
+#         user = authenticate(username=username, password=password)
+
+#         if user:
+#             refresh = RefreshToken.for_user(user)
+#             return Response({'access_token': str(refresh.access_token)}, status=status.HTTP_200_OK)
+#         else:
+#             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -420,8 +432,22 @@ class LoginView(APIView):
         user = authenticate(username=username, password=password)
 
         if user:
+            # Use o serializer personalizado para incluir informações adicionais no token
+            serializer = CustomTokenObtainPairSerializer(data={"username": username, "password": password})
+            serializer.is_valid(raise_exception=True)
             refresh = RefreshToken.for_user(user)
-            return Response({'access_token': str(refresh.access_token)}, status=status.HTTP_200_OK)
+
+            # Inclua as informações adicionais no JSON de resposta
+            response_data = {
+                'access_token': str(refresh.access_token),
+                'user_id': user.id,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'email': user.email,
+            }
+            print(response_data)
+
+            return Response(response_data, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -432,3 +458,16 @@ class LogoutView(APIView):
     def post(self, request):
         request.auth.delete()
         return Response(status=status.HTTP_200_OK)
+
+# ---------------------------------------------------------------
+# <---                UserInfo Related Views                 --->
+# ---------------------------------------------------------------
+@api_view(['GET'])
+def get_user_info(request, user_id):
+    try:
+        user_profile = UserProfile.objects.get(user=user_id)
+    except UserProfile.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UserProfileSerializer(user_profile)
+    return Response(serializer.data)

@@ -57,7 +57,9 @@ urlpatterns = [
     path('users/<int:user_id>/work_experiences/<int:exp_id>/update', views.update_work_experience),
     path('users/<int:user_id>/work_experiences/<int:exp_id>/delete', views.delete_work_experience),
     path('users/<int:user_id>/work_experiences/create/', views.create_user_work_experience),
-    # <-----Auth Related related urls----->
+    # <-----User Profile related urls----->
     path('login/', LoginView.as_view(), name='login'),
+    # <-----Auth Related related urls----->
+    path('users/<int:user_id>/myProfile',views.get_user_info),
     path('logout/', LogoutView.as_view(), name='logout'),
 ]

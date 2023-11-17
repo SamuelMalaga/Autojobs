@@ -1,14 +1,32 @@
 import { createStore } from 'vuex'
-
+//DEFAULT CREATESTORE
+// export default createStore({
+//   state: {
+//   },
+//   getters: {
+//   },
+//   mutations: {
+//   },
+//   actions: {
+//   },
+//   modules: {
+//   }
+// })
 export default createStore({
   state: {
-  },
-  getters: {
+    FullUserInfo: null,
   },
   mutations: {
+    setFullUserInfo(state, FullUserInfo) {
+      state.FullUserInfo = FullUserInfo;
+    },
   },
   actions: {
+    updateFullUserInfo({ commit }, FullUserInfo) {
+      commit('setFullUserInfo', FullUserInfo);
+    },
   },
-  modules: {
-  }
-})
+  getters: {
+    getFullUserInfo: (state) => state.FullUserInfo,
+  },
+});
