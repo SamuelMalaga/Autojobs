@@ -1,7 +1,6 @@
 <template>
   <div class="wrapper">
-    <NavBar/>
-    <!-- <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <router-link to="/" class="navbar-item"><strong>Autojobs</strong></router-link>
 
@@ -30,32 +29,19 @@
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="buttons">
-              <a class="button is-primary">
+              <router-link to="/signup" class="button is-primary">
                 <strong>Sign up</strong>
-              </a>
-              <a class="button is-light">
-                Log in
-              </a>
+              </router-link>
             </div>
           </div>
         </div>
       </div>
-    </nav> -->
-    <section class="section">
-      <router-view/>
-    </section>
-    <footer class="footer">
-      <p class="has-text-centered">Versão inicial do jobTracker</p>
-    </footer>
+    </nav>
   </div>
 </template>
 
 <script>
-import NavBar from '@/components/NavBar.vue';
 export default{
-  components: {
-    NavBar,
-  },
   data(){
     return{
       showMobileMenu:false,
@@ -63,7 +49,3 @@ export default{
   }
 }
 </script>
-
-<style lang="scss">
-@import '../node_modules/bulma';
-</style>

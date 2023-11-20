@@ -1,10 +1,10 @@
 <template>
   <div class="tile is-child  box">
-      <p class="title">Work Experiences</p>
-      <div v-for="experience in workExperiences" :key="experience.id" class="card mb-4">
+      <p class="title">Certifications</p>
+      <div v-for="certification in certifications" :key="certification.id" class="card mb-4">
         <header class="card-header">
           <p class="card-header-title">
-            {{experience.exp_company}}
+            {{certification.cert_institute}}
           </p>
           <button class="card-header-icon" aria-label="more options">
             <span class="icon">
@@ -14,10 +14,10 @@
         </header>
         <div class="card-content">
           <div class="content">
-            {{experience.exp_description}}
+            {{certification.cert_name}}
             <a href="#">@bulmaio</a>. <a href="#">#css</a> <a href="#">#responsive</a>
             <br>
-            <p>De <time datetime="2016-1-1">{{experience.exp_start_time}}</time> Até <time datetime="2016-1-1">{{exp_end_time}}</time></p>
+            <p>De <time datetime="2016-1-1">{{certification.cert_emmited_at}}</time> Até <time datetime="2016-1-1">{{certification.cert_valid_until}}</time></p>
           </div>
         </div>
         <footer class="card-footer ">
@@ -27,14 +27,22 @@
       </div>
     </div>
 </template>
-
+<!--         {
+        "id": 3,
+        "cert_name": "Teate",
+        "cert_institute": "Teste Institute",
+        "cert_emmited_at": "2023-12-31T17:00:00Z",
+        "cert_valid_until": "2023-12-31T17:00:00Z",
+        "cert_user": 2
+    }
+    } -->
 <script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
-      workExperiences: [],
+      certifications: [],
     };
   },
   computed: {
@@ -44,20 +52,20 @@ export default {
     },
     endpoint() {
       // Construa o endpoint com base no user_id
-      return `http://127.0.0.1:8000/users/${this.userId}/work_experiences/`;
+      return `http://127.0.0.1:8000/users/${this.userId}/certifications/`;
     },
   },
   mounted() {
     // Certifique-se de ter userId disponível antes de fazer a solicitação
     if (this.userId) {
-      this.fetchWorkExperiences();
+      this.fetchCertifications();
     }
   },
   methods: {
-    fetchWorkExperiences() {
+    fetchCertifications() {
       axios.get(this.endpoint)
         .then(response => {
-          this.workExperiences = response.data;
+          this.certifications = response.data;
           //console.log(response.data);
         })
         .catch(error => {

@@ -1,10 +1,10 @@
 <template>
   <div class="tile is-child  box">
-      <p class="title">Work Experiences</p>
-      <div v-for="experience in workExperiences" :key="experience.id" class="card mb-4">
+      <p class="title">Education</p>
+      <div v-for="education in educationExperiences" :key="education.id" class="card mb-4">
         <header class="card-header">
           <p class="card-header-title">
-            {{experience.exp_company}}
+            {{education.edu_institute}}
           </p>
           <button class="card-header-icon" aria-label="more options">
             <span class="icon">
@@ -14,10 +14,10 @@
         </header>
         <div class="card-content">
           <div class="content">
-            {{experience.exp_description}}
+            {{education.edu_description}}
             <a href="#">@bulmaio</a>. <a href="#">#css</a> <a href="#">#responsive</a>
             <br>
-            <p>De <time datetime="2016-1-1">{{experience.exp_start_time}}</time> Até <time datetime="2016-1-1">{{exp_end_time}}</time></p>
+            <p>De <time datetime="2016-1-1">{{education.edu_start_time}}</time> Até <time datetime="2016-1-1">{{edu_end_time}}</time></p>
           </div>
         </div>
         <footer class="card-footer ">
@@ -27,14 +27,21 @@
       </div>
     </div>
 </template>
-
+<!--     {
+        "id": 4,
+        "edu_institute": "teste Outro",
+        "edu_description": "Teste 12312312",
+        "edu_start_time": "2023-12-31T17:00:00Z",
+        "edu_end_time": "2023-12-31T17:00:00Z",
+        "edu_user": 2
+    } -->
 <script>
 import axios from 'axios';
 
 export default {
   data() {
     return {
-      workExperiences: [],
+      educationExperiences: [],
     };
   },
   computed: {
@@ -44,20 +51,20 @@ export default {
     },
     endpoint() {
       // Construa o endpoint com base no user_id
-      return `http://127.0.0.1:8000/users/${this.userId}/work_experiences/`;
+      return `http://127.0.0.1:8000/users/${this.userId}/educations/`;
     },
   },
   mounted() {
     // Certifique-se de ter userId disponível antes de fazer a solicitação
     if (this.userId) {
-      this.fetchWorkExperiences();
+      this.fetchEducationExperiences();
     }
   },
   methods: {
-    fetchWorkExperiences() {
+    fetchEducationExperiences() {
       axios.get(this.endpoint)
         .then(response => {
-          this.workExperiences = response.data;
+          this.educationExperiences = response.data;
           //console.log(response.data);
         })
         .catch(error => {
