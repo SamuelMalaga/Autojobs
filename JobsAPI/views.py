@@ -1,8 +1,8 @@
 import subprocess
 from django.http import JsonResponse
 from .models import Job, Application, Certification, Education,Language,WorkExperience,UserProfile
-from .serializers import JobSerializer, ApplicationSerializer, CertificationSerializer, EducationSerializer, LanguageSerializer, WorkExperienceSerializer, UserProfileSerializer,CustomTokenObtainPairSerializer
-from rest_framework.decorators import api_view
+from .serializers import JobSerializer, ApplicationSerializer, CertificationSerializer, EducationSerializer, LanguageSerializer, WorkExperienceSerializer, UserProfileSerializer,CustomTokenObtainPairSerializer, NewUserSerializer
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -11,10 +11,10 @@ from django.db import IntegrityError
 # Auth Views
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout
 
 
 
@@ -22,6 +22,8 @@ from django.contrib.auth import authenticate
 # <---                  Job Related Views                    --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def job_list(request):
   if request.method =='GET':
     jobs = Job.objects.all()
@@ -34,6 +36,8 @@ def job_list(request):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def job_detail(request,id):
   try:
     job = Job.objects.get(pk=id)
@@ -56,6 +60,8 @@ def job_detail(request,id):
 # <---                Scraper Related Views                  --->
 # ---------------------------------------------------------------
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def execute_scraper(request):
     # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
     script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/FULLpublicJscraper.js'
@@ -84,6 +90,8 @@ def execute_scraper(request):
 # <---              Application Related Views                --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def application_list(request,user_id):
   if request.method =='GET':
     applications = Application.objects.filter(appl_user=user_id)
@@ -96,6 +104,8 @@ def application_list(request,user_id):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_application_detail(request, user_id, appl_id):
     try:
         application = Application.objects.get(appl_user=user_id, pk=appl_id)
@@ -106,6 +116,8 @@ def get_application_detail(request, user_id, appl_id):
     return Response(serializer.data)
 
 @api_view(['PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def update_application(request, user_id, appl_id):
     try:
         application = Application.objects.get(appl_user=user_id, pk=appl_id)
@@ -119,6 +131,8 @@ def update_application(request, user_id, appl_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def delete_application(request, user_id, appl_id):
     try:
         application = Application.objects.get(appl_user=user_id, pk=appl_id)
@@ -129,6 +143,8 @@ def delete_application(request, user_id, appl_id):
     return Response({'detail': 'application deleted successfully'},status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_user_application(request, user_id):
     user = get_object_or_404(User, pk=user_id)
 
@@ -151,6 +167,8 @@ def create_user_application(request, user_id):
 # <---              Certification Related Views              --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def certification_list(request,user_id):
   if request.method =='GET':
     certifications = Certification.objects.filter(cert_user=user_id)
@@ -163,6 +181,8 @@ def certification_list(request,user_id):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_certification_detail(request, user_id, cert_id):
     try:
         certification = Certification.objects.get(cert_user=user_id, pk=cert_id)
@@ -173,6 +193,8 @@ def get_certification_detail(request, user_id, cert_id):
     return Response(serializer.data)
 
 @api_view(['PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def update_certification(request, user_id, cert_id):
     try:
         certification = Certification.objects.get(cert_user=user_id, pk=cert_id)
@@ -186,6 +208,8 @@ def update_certification(request, user_id, cert_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def delete_certification(request, user_id, cert_id):
     try:
         certification = Certification.objects.get(cert_user=user_id, pk=cert_id)
@@ -196,6 +220,8 @@ def delete_certification(request, user_id, cert_id):
     return Response({'detail': 'certification deleted successfully'},status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_user_certification(request, user_id):
     user = get_object_or_404(User, pk=user_id)
 
@@ -216,6 +242,8 @@ def create_user_certification(request, user_id):
 # <---               Education Related Views                 --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def education_list(request,user_id):
   if request.method =='GET':
     educations = Education.objects.filter(edu_user=user_id)
@@ -228,6 +256,8 @@ def education_list(request,user_id):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_education_detail(request, user_id, edu_id):
     try:
         education = Education.objects.get(edu_user=user_id, pk=edu_id)
@@ -238,6 +268,8 @@ def get_education_detail(request, user_id, edu_id):
     return Response(serializer.data)
 
 @api_view(['PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def update_education(request, user_id, edu_id):
     try:
         education = Education.objects.get(edu_user=user_id, pk=edu_id)
@@ -251,6 +283,8 @@ def update_education(request, user_id, edu_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def delete_education(request, user_id, edu_id):
     try:
         education = Education.objects.get(edu_user=user_id, pk=edu_id)
@@ -261,6 +295,8 @@ def delete_education(request, user_id, edu_id):
     return Response({'detail': 'education deleted successfully'},status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_user_education(request, user_id):
     user = get_object_or_404(User, pk=user_id)
 
@@ -282,6 +318,8 @@ def create_user_education(request, user_id):
 # <---                Language Related Views                 --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def language_list(request,user_id):
   if request.method =='GET':
     languages = Language.objects.filter(lng_user=user_id)
@@ -294,6 +332,8 @@ def language_list(request,user_id):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_language_detail(request, user_id, lng_id):
     try:
         language = Language.objects.get(lng_user=user_id, pk=lng_id)
@@ -304,6 +344,8 @@ def get_language_detail(request, user_id, lng_id):
     return Response(serializer.data)
 
 @api_view(['PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def update_language(request, user_id, lng_id):
     try:
         language = Language.objects.get(lng_user=user_id, pk=lng_id)
@@ -317,6 +359,8 @@ def update_language(request, user_id, lng_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def delete_language(request, user_id, lng_id):
     try:
         language = Language.objects.get(lng_user=user_id, pk=lng_id)
@@ -327,6 +371,8 @@ def delete_language(request, user_id, lng_id):
     return Response({'detail': 'Language deleted successfully'},status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_user_language(request, user_id):
     user = get_object_or_404(User, pk=user_id)
 
@@ -348,6 +394,8 @@ def create_user_language(request, user_id):
 # <---                WorkExperience Related Views           --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])  # Adicione o TokenAuthentication aqui
+@permission_classes([IsAuthenticated]) # Adicione IsAuthenticated aqui
 def work_experience_list(request,user_id):
   if request.method =='GET':
     work_experiences = WorkExperience.objects.filter(exp_user=user_id)
@@ -360,6 +408,8 @@ def work_experience_list(request,user_id):
       return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_work_experience(request, user_id, exp_id):
     try:
         work_experience = WorkExperience.objects.get(exp_user=user_id, pk=exp_id)
@@ -370,6 +420,8 @@ def get_work_experience(request, user_id, exp_id):
     return Response(serializer.data)
 
 @api_view(['PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def update_work_experience(request, user_id, exp_id):
     try:
         work_experience = WorkExperience.objects.get(exp_user=user_id, pk=exp_id)
@@ -383,6 +435,8 @@ def update_work_experience(request, user_id, exp_id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def delete_work_experience(request, user_id, exp_id):
     try:
         work_experience = WorkExperience.objects.get(exp_user=user_id, pk=exp_id)
@@ -393,6 +447,8 @@ def delete_work_experience(request, user_id, exp_id):
     return Response({'detail': 'Work experience deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def create_user_work_experience(request, user_id):
     user = get_object_or_404(User, pk=user_id)
 
@@ -412,18 +468,6 @@ def create_user_work_experience(request, user_id):
 # ---------------------------------------------------------------
 # <---                  Auth Related Views                   --->
 # ---------------------------------------------------------------
-# class LoginView(APIView):
-#     def post(self, request):
-#         username = request.data.get('username')
-#         password = request.data.get('password')
-
-#         user = authenticate(username=username, password=password)
-
-#         if user:
-#             refresh = RefreshToken.for_user(user)
-#             return Response({'access_token': str(refresh.access_token)}, status=status.HTTP_200_OK)
-#         else:
-#             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')
@@ -451,13 +495,32 @@ class LoginView(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
+@api_view(['POST'])
+def logoutTeste(request):
+   logout(request)
+   return Response(status=status.HTTP_200_OK)
 class LogoutView(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        request.auth.delete()
-        return Response(status=status.HTTP_200_OK)
+    # Obtenha o token do cabeçalho da solicitação
+        token = request.auth
+
+        # Verifique se o token existe e é válido
+        if token:
+            # Decodifique o token para obter informações adicionais, se necessário
+            user = Token.objects.get(key=token).user
+            # Realize a lógica de logout
+            token.delete()  # Exclua o token do banco de dados
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response({'error': 'Token inválido'}, status=status.HTTP_401_UNAUTHORIZED)
+    # def post(self, request):
+    #     token = request.auth
+    #     print(token)
+    #     request.auth.delete()
+    #     return Response(status=status.HTTP_200_OK)
 
 # ---------------------------------------------------------------
 # <---                UserInfo Related Views                 --->
@@ -471,3 +534,41 @@ def get_user_info(request, user_id):
 
     serializer = UserProfileSerializer(user_profile)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def login_test(request):
+    user = get_object_or_404(User, username=request.data['username'])
+    if not user.check_password(request.data['password']):
+        return Response({"detail":"not found"},status=status.HTTP_404_NOT_FOUND)
+
+    token,created = Token.objects.get_or_create(user=user)
+    serializer = NewUserSerializer(instance=user)
+    return Response({"token":token.key, "user":serializer.data})
+
+@api_view(['GET'])
+def signup_test(request):
+    return Response({})
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def response_test(request):
+    return Response({"passed for {}".format(request.user.email)})
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def logout_test(request):
+    # Obtenha o token do cabeçalho da solicitação
+    token = request.auth
+
+    if token:
+        # Exclua o token associado ao usuário
+        token.delete()
+
+        # Responda ao cliente indicando que o logout foi bem-sucedido
+        return Response({"detail": "Logout bem-sucedido"}, status=status.HTTP_200_OK)
+    else:
+        # Se não houver token no cabeçalho, retorne uma resposta de erro
+        return Response({"detail": "Token não fornecido"}, status=status.HTTP_401_UNAUTHORIZED)
+

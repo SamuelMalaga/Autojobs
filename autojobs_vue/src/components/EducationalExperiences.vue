@@ -53,6 +53,10 @@ export default {
       // Construa o endpoint com base no user_id
       return `http://127.0.0.1:8000/users/${this.userId}/educations/`;
     },
+    token() {
+      // Obtenha o token do Local Storage
+      return localStorage.getItem('token');
+    },
   },
   mounted() {
     // Certifique-se de ter userId disponível antes de fazer a solicitação
@@ -62,7 +66,9 @@ export default {
   },
   methods: {
     fetchEducationExperiences() {
-      axios.get(this.endpoint)
+
+      const headers = { Authorization: `Token ${this.token}` };
+      axios.get(this.endpoint, { headers })
         .then(response => {
           this.educationExperiences = response.data;
           //console.log(response.data);

@@ -42,32 +42,32 @@ export default {
         });
 
         // Armazene o token retornado (se aplicável) e realize ações necessárias após o login
-        const token = response.data.access_token;
-        const userId = response.data.user_id;
+        const token = response.data.token;
+        const userId = response.data.user.id;
         this.$store.dispatch('updateUserId', userId);
-        //console.log('userId da response', userId)
-        //console.log('userIdObtido pelo getter',this.$store.getters.getUserId)
+
         // Armazene o token no localStorage ou em outro local seguro
         localStorage.setItem('token', token);
         // Retrieves additional user data
         const AdditionalUserInfoResponse = await axios.get(`http://127.0.0.1:8000/users/${userId}/myProfile`, {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Token ${token}`,
           },
         });
+
+        this.$store.dispatch('login');
+
         const AdditionalUserInfo = AdditionalUserInfoResponse.data;
         const FullUserInfo ={
-          firstName:response.data.first_name,
-          lastName:response.data.last_name,
-          email:response.data.email,
+          firstName:response.data.user.first_name,
+          lastName:response.data.user.last_name,
+          email:response.data.user.email,
           city:AdditionalUserInfo.city,
           country:AdditionalUserInfo.country,
           bio:AdditionalUserInfo.bio,
           userId : userId
         }
-        //console.log(FullUserInfo)
         this.$store.dispatch('updateFullUserInfo', FullUserInfo);
-        //console.log('useriNFOObtido pelo getter',this.$store.getters.getFullUserInfo)
         this.$router.push({ name: 'myProfile'});
 
         // Redirecione para outra página ou faça outras ações após o login bem-sucedido

@@ -6,11 +6,7 @@
     </div>
   </div>
   <div class="tile is-parent is-vertical">
-    <!-- <div class="tile is-child  box">
-    </div> -->
       <WorkExperiences/>
-    <!-- <div class="tile is-child  box">
-    </div> -->
       <EducationalExperiences/>
       <Certifications/>
       <Languages/>
@@ -37,7 +33,7 @@ export default {
   },
   created() {
     // Exemplo: Se as informações do usuário não estiverem disponíveis, redirecione para outra página
-    if (!this.$store.getters.getFullUserInfo) {
+    if (!this.$store.getters.isLoggedIn) {
       this.$router.push('/'); // ou qualquer outra página
     }
   },

@@ -46,6 +46,10 @@ export default {
       // Construa o endpoint com base no user_id
       return `http://127.0.0.1:8000/users/${this.userId}/work_experiences/`;
     },
+    token() {
+      // Obtenha o token do Local Storage
+      return localStorage.getItem('token');
+    },
   },
   mounted() {
     // Certifique-se de ter userId disponível antes de fazer a solicitação
@@ -55,10 +59,13 @@ export default {
   },
   methods: {
     fetchWorkExperiences() {
-      axios.get(this.endpoint)
+      // Adicione o token ao cabeçalho da solicitação
+      const headers = { Authorization: `Token ${this.token}` };
+
+      // Faça a solicitação HTTP com o token no cabeçalho
+      axios.get(this.endpoint, { headers })
         .then(response => {
           this.workExperiences = response.data;
-          //console.log(response.data);
         })
         .catch(error => {
           console.error('Erro ao obter dados da API:', error);

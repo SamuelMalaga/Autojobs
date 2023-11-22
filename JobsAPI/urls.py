@@ -52,14 +52,19 @@ urlpatterns = [
     path('users/<int:user_id>/languages/create/', views.create_user_language),
     # <-----WorkExperience related urls----->
     path('users/<int:user_id>/work_experiences/', views.work_experience_list),
-   # path('users/<int:user_id>/work_experiences/<int:exp_id>', views.work_experience_detail),
     path('users/<int:user_id>/work_experiences/<int:exp_id>/details', views.get_work_experience),
     path('users/<int:user_id>/work_experiences/<int:exp_id>/update', views.update_work_experience),
     path('users/<int:user_id>/work_experiences/<int:exp_id>/delete', views.delete_work_experience),
     path('users/<int:user_id>/work_experiences/create/', views.create_user_work_experience),
     # <-----User Profile related urls----->
-    path('login/', LoginView.as_view(), name='login'),
-    # <-----Auth Related related urls----->
     path('users/<int:user_id>/myProfile',views.get_user_info),
-    path('logout/', LogoutView.as_view(), name='logout'),
+    # <-----Auth Related related urls----->
+    path('deprecated_login/', LoginView.as_view(), name='login'),
+    path('deprecated_logout/', LogoutView.as_view(), name='logout'),
+    path('logoutTeste/',views.logoutTeste),
+    # <-----Auth test urls----->
+    path('login/', views.login_test),
+    path('signup_test/', views.signup_test),
+    path('response_test/',views.response_test),
+    path('logout/',views.logout_test)
 ]

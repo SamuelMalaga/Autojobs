@@ -61,3 +61,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['email'] = user.email
 
         return data
+
+class NewUserSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = User
+    fields = ['id','first_name','last_name','email']

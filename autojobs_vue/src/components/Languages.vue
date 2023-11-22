@@ -6,7 +6,6 @@
           <p class="card-header-title">
             {{language.lng_name}}
           </p>
-          <p> Nível: {{ language.lng_proficiency_level }}</p>
           <button class="card-header-icon" aria-label="more options">
             <span class="icon">
               <i class="fas fa-angle-down" aria-hidden="true"></i>
@@ -20,14 +19,7 @@
       </div>
     </div>
 </template>
-<!--             {
-        "id": 3,
-        "lng_name": "TesteLang",
-        "lng_country": "TesteCountry",
-        "lng_proficiency_level": "B2",
-        "lng_user": 1
-    },
-    } -->
+
 <script>
 import axios from 'axios';
 
@@ -46,6 +38,10 @@ export default {
       // Construa o endpoint com base no user_id
       return `http://127.0.0.1:8000/users/${this.userId}/languages/`;
     },
+    token() {
+      // Obtenha o token do Local Storage
+      return localStorage.getItem('token');
+    },
   },
   mounted() {
     // Certifique-se de ter userId disponível antes de fazer a solicitação
@@ -55,7 +51,10 @@ export default {
   },
   methods: {
     fetchLanguages() {
-      axios.get(this.endpoint)
+
+      const headers = { Authorization: `Token ${this.token}` };
+
+      axios.get(this.endpoint, { headers })
         .then(response => {
           this.languages = response.data;
           //console.log(response.data);
