@@ -20,6 +20,7 @@ import UserInfo from '@/components/UserInfo.vue';
 import EducationalExperiences from '@/components/EducationalExperiences.vue';
 import Certifications from '@/components/Certifications.vue';
 import Languages from '@/components/Languages.vue';
+import EditInfo from '@/components/EditInfo.vue';
 
 
 export default {
@@ -30,6 +31,7 @@ export default {
     EducationalExperiences,
     Certifications,
     Languages,
+    EditInfo
   },
   created() {
     // Exemplo: Se as informações do usuário não estiverem disponíveis, redirecione para outra página
