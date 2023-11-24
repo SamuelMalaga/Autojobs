@@ -21,28 +21,59 @@
           </div>
         </div>
         <footer class="card-footer ">
-          <button class="button m-3">Edit</button>
+          <button class="button m-3" @click="openEditModal(certification)">Edit</button>
           <button class="button is-danger m-3">Delete</button>
         </footer>
       </div>
+      <ChangeInfoModal
+        :isOpen="isEditModalOpen"
+        :object_instance="languages_instance"
+        :updateUrl="endpoint"
+        @submit="handleEditSubmit"
+        @data-updated="handleDataUpdated"
+        @close="closeEditModal"
+      />
     </div>
 </template>
-<!--         {
-        "id": 3,
-        "cert_name": "Teate",
-        "cert_institute": "Teste Institute",
-        "cert_emmited_at": "2023-12-31T17:00:00Z",
-        "cert_valid_until": "2023-12-31T17:00:00Z",
-        "cert_user": 2
-    }
-    } -->
 <script>
 import axios from 'axios';
+import ChangeInfoModal from './ChangeInfoModal.vue';
 
 export default {
+  components: {
+    ChangeInfoModal
+  },
   data() {
     return {
       certifications: [],
+      isEditModalOpen: false,
+      object_fields: [
+        {
+        field_name:"cert_name",
+        field_title: "Nome do certificado",
+        field_type: "dropdown",
+        field_value: ""
+        },
+        {
+        field_name:"cert_institute",
+        field_title: "Instituto/empresa de emissão do certificado",
+        field_type: "text",
+        field_value: ""
+        },
+        {
+        field_name:"cert_emmited_at",
+        field_title: "Emitido em",
+        field_type: "date",
+        field_value: ""
+        },
+        {
+        field_name:"cert_valid_until",
+        field_title: "Válido até",
+        field_type: "date",
+        field_value: ""
+        }
+      ],
+      certification_instance:{}
     };
   },
   computed: {
@@ -77,6 +108,37 @@ export default {
         .catch(error => {
           console.error('Erro ao obter dados da API:', error);
         });
+    },
+    openEditModal(certification) {
+      //Deep copy of the fields to edit
+      const object_fieldsCopy = this.object_fields
+
+      // Atualize a cópia com os valores da experiência selecionada
+      object_fieldsCopy.forEach(campo => {
+        campo.field_value = certification[campo.field_name];
+      });
+
+      // Atualize os dados no objeto
+      this.languages_instance = {
+        instance_entity:"Language",
+        object_id: certification.id,
+        fields: object_fieldsCopy,
+      };
+      this.selectedCertification = { ...certification }
+      this.isEditModalOpen = true;
+    },
+    closeEditModal() {
+      this.isEditModalOpen = false;
+    },
+    handleEditSubmit(dadosEditados) {
+      // Lógica para enviar dados editados ao backend
+      console.log("Dados Editados:", dadosEditados);
+      // Feche o modal
+      this.closeEditModal();
+    },
+    handleDataUpdated() {
+      // Lógica para atualizar os dados no componente pai
+      this.fetchCertifications();
     },
   },
 };

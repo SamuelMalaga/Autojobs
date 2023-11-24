@@ -27,9 +27,10 @@
       <!-- Modal de Edição -->
       <ChangeInfoModal
         :isOpen="isEditModalOpen"
-        :object_instance="object_instance_test"
-        :dataToIterate="selectedWorkExperience"
+        :object_instance="work_experience_instance"
+        :updateUrl="endpoint"
         @submit="handleEditSubmit"
+        @data-updated="handleDataUpdated"
         @close="closeEditModal"
       />
     </div>
@@ -37,9 +38,7 @@
 
 <script>
 import axios from 'axios';
-//import EditInfo from './EditInfo.vue';
 import ChangeInfoModal from './ChangeInfoModal.vue';
-//import { ref } from 'vue';
 
 export default {
   components: {
@@ -49,43 +48,39 @@ export default {
     return {
       workExperiences: [],
       isEditModalOpen: false,
-      object_fields: {
-        object_id:0,
-        fields: [
-            {
-            field_name:"exp_type",
-            field_title: "Tipo de Experiência",
-            field_type: "dropdown",
-            field_value: ""
-            },
-            {
-            field_name:"exp_company",
-            field_title: "Título da experiência/cargo",
-            field_type: "text",
-            field_value: ""
-            },
-            {
-            field_name:"exp_description",
-            field_title: "Descrição da experiência",
-            field_type: "long_text",
-            field_value: ""
-            },
-            {
-            field_name:"exp_start_time",
-            field_title: "Data de início",
-            field_type: "date",
-            field_value: ""
-            },
-            {
-            field_name:"exp_end_time",
-            field_title: "Data de fim",
-            field_type: "date",
-            field_value: ""
-            }
-          ]
-      },
-      selectedWorkExperience: {},
-      object_instance_test:{}
+      object_fields: [
+        {
+        field_name:"exp_type",
+        field_title: "Tipo de Experiência",
+        field_type: "dropdown",
+        field_value: ""
+        },
+        {
+        field_name:"exp_company",
+        field_title: "Título da experiência/cargo",
+        field_type: "text",
+        field_value: ""
+        },
+        {
+        field_name:"exp_description",
+        field_title: "Descrição da experiência",
+        field_type: "long_text",
+        field_value: ""
+        },
+        {
+        field_name:"exp_start_time",
+        field_title: "Data de início",
+        field_type: "date",
+        field_value: ""
+        },
+        {
+        field_name:"exp_end_time",
+        field_title: "Data de fim",
+        field_type: "date",
+        field_value: ""
+        }
+      ],
+      work_experience_instance:{}
     };
   },
   computed: {
@@ -112,17 +107,18 @@ export default {
     openEditModal(experience) {
 
       //Deep copy of the fields to edit
-      const object_fieldsCopy = JSON.parse(JSON.stringify(this.object_fields));
+      const object_fieldsCopy = this.object_fields
 
       // Atualize a cópia com os valores da experiência selecionada
-      object_fieldsCopy.fields.forEach(campo => {
+      object_fieldsCopy.forEach(campo => {
         campo.field_value = experience[campo.field_name];
       });
 
       // Atualize os dados no objeto
-      this.object_instance_test = {
+      this.work_experience_instance = {
+        instance_entity:"Work Experiences",
         object_id: experience.id,
-        fields: object_fieldsCopy.fields,
+        fields: object_fieldsCopy,
       };
       this.selectedWorkExperience = { ...experience }
       this.isEditModalOpen = true;
@@ -149,6 +145,10 @@ export default {
         .catch(error => {
           console.error('Erro ao obter dados da API:', error);
         });
+    },
+    handleDataUpdated() {
+      // Lógica para atualizar os dados no componente pai
+      this.fetchWorkExperiences();
     },
   },
 };
