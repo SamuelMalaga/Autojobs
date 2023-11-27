@@ -6,9 +6,14 @@
           <p class="card-header-title">
             {{experience.exp_company}}
           </p>
+          <button class="card-header-icon" aria-label="more options" @click="openEditModal(experience)">
+            <span class="icon" >
+              <font-awesome-icon  icon="pen"  />
+            </span>
+          </button>
           <button class="card-header-icon" aria-label="more options">
             <span class="icon">
-              <i class="fas fa-angle-down" aria-hidden="true"></i>
+              <font-awesome-icon icon="trash" :style="{ color: '#ff0000' }" @click="openDeleteModal(experience)" />
             </span>
           </button>
         </header>
@@ -16,14 +21,11 @@
           <div class="content">
             {{experience.exp_description}}
             <br>
-            <p>De <time datetime="2016-1-1">{{experience.exp_start_time}}</time> Até <time datetime="2016-1-1">{{exp_end_time}}</time></p>
+            <p>De <time datetime="2016-1-1">{{experience.exp_start_time}}</time> Até <time datetime="2016-1-1">{{experience.exp_end_time}}</time></p>
           </div>
         </div>
-        <footer class="card-footer ">
-          <button class="button m-3" @click="openEditModal(experience)">Edit</button>
-          <button class="button is-danger m-3">Delete</button>
-        </footer>
       </div>
+      <button class="button is-sucess m-3" @click="openCreateModal">Add</button>
       <!-- Modal de Edição -->
       <ChangeInfoModal
         :isOpen="isEditModalOpen"
@@ -33,21 +35,44 @@
         @data-updated="handleDataUpdated"
         @close="closeEditModal"
       />
+      <DeleteInfoModal
+        :isOpen="isDeleteModalOpen"
+        :object_instance="work_experience_instance"
+        :deleteEndpoint="endpoint"
+        @submit="handleDeleteSubmit"
+        @data-deleted="handleDataDeleted"
+        @close="closeDeleteModal"
+      />
+      <CreateInfoModal
+        :isOpen="isCreateModalOpen"
+        :fields="object_fields"
+        :createEndpoint="endpoint"
+        @submit="handleCreateSubmit"
+        @data-created="handleCreated"
+        @close="closeCreateModal"
+        :object_instance="object_instance"
+      />
     </div>
 </template>
 
 <script>
 import axios from 'axios';
 import ChangeInfoModal from './ChangeInfoModal.vue';
+import DeleteInfoModal from './DeleteInfoModal.vue';
+import CreateInfoModal from './CreateInfoModal.vue';
 
 export default {
   components: {
-    ChangeInfoModal
+    ChangeInfoModal,
+    DeleteInfoModal,
+    CreateInfoModal
   },
   data() {
     return {
       workExperiences: [],
       isEditModalOpen: false,
+      isDeleteModalOpen: false,
+      isCreateModalOpen: false,
       object_fields: [
         {
         field_name:"exp_type",
@@ -104,6 +129,25 @@ export default {
     }
   },
   methods: {
+    //<--------------------------------Get Data---------------------------------------->
+    fetchWorkExperiences() {
+      // Adicione o token ao cabeçalho da solicitação
+      const headers = { Authorization: `Token ${this.token}` };
+
+      // Faça a solicitação HTTP com o token no cabeçalho
+      axios.get(this.endpoint, { headers })
+        .then(response => {
+          this.workExperiences = response.data;
+        })
+        .catch(error => {
+          console.error('Erro ao obter dados da API:', error);
+        });
+    },
+    handleDataUpdated() {
+      // Lógica para atualizar os dados no componente pai
+      this.fetchWorkExperiences();
+    },
+    //<--------------------------------Edit Data---------------------------------------->
     openEditModal(experience) {
 
       //Deep copy of the fields to edit
@@ -126,6 +170,7 @@ export default {
     closeEditModal() {
       this.isEditModalOpen = false;
     },
+
     handleEditSubmit(dadosEditados) {
       // Lógica para enviar dados editados ao backend
       console.log("Dados Editados:", dadosEditados);
@@ -133,20 +178,64 @@ export default {
       // Feche o modal
       this.closeEditModal();
     },
-    fetchWorkExperiences() {
-      // Adicione o token ao cabeçalho da solicitação
-      const headers = { Authorization: `Token ${this.token}` };
+    //<--------------------------------Delete Data---------------------------------------->
+    openDeleteModal(experience){
+      //Deep copy of the fields to edit
+      const object_fieldsCopy = this.object_fields
 
-      // Faça a solicitação HTTP com o token no cabeçalho
-      axios.get(this.endpoint, { headers })
-        .then(response => {
-          this.workExperiences = response.data;
-        })
-        .catch(error => {
-          console.error('Erro ao obter dados da API:', error);
-        });
+      // Atualize a cópia com os valores da experiência selecionada
+      object_fieldsCopy.forEach(campo => {
+        campo.field_value = experience[campo.field_name];
+      });
+
+      // Atualize os dados no objeto
+      this.work_experience_instance = {
+        instance_entity:"Experience",
+        object_id: experience.id,
+        fields: object_fieldsCopy,
+      };
+      this.selectedCertification = { ...experience }
+      this.isDeleteModalOpen = true;
+
     },
-    handleDataUpdated() {
+    closeDeleteModal() {
+      this.isDeleteModalOpen = false;
+    },
+    handleDeleteSubmit(dadosEditados) {
+      // Lógica para enviar dados editados ao backend
+      console.log("Dados Deletados:", deletedData);
+      // Feche o modal
+      this.closeEditModal();
+    },
+    handleDataDeleted(){
+      // Lógica para atualizar os dados no componente pai
+      this.fetchWorkExperiences();
+    },
+    //<--------------------------------Create Data---------------------------------------->
+    openCreateModal() {
+      const object_fieldsCopy = this.object_fields.map(campo => ({
+          ...campo,
+          field_value: "", // ou qualquer valor padrão desejado
+        }));
+
+      this.object_instance = {
+        instance_entity: "Certification",
+        object_id: null, // ou qualquer valor padrão desejado
+        fields: object_fieldsCopy,
+      };
+
+      this.isCreateModalOpen = true;
+    },
+    closeCreateModal() {
+      this.isCreateModalOpen = false;
+    },
+    handleCreateSubmit(dadosEditados) {
+      // Lógica para enviar dados editados ao backend
+      console.log("Dados Criados:");
+      // Feche o modal
+      this.closeCreateModal();
+    },
+    handleCreated(){
       // Lógica para atualizar os dados no componente pai
       this.fetchWorkExperiences();
     },

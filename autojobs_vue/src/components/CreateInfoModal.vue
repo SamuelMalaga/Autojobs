@@ -4,11 +4,10 @@
     <div class="popup_inner">
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Edit {{ object_instance.instance_entity }}</p>
+          <p class="modal-card-title">Create {{ object_instance.instance_entity }}</p>
           <button class="delete" aria-label="close" @click="handleClose"></button>
         </header>
         <section class="modal-card-body">
-          <h2 class="subtitle">ID Obj: {{ object_instance.object_id }}</h2>
           <div v-for="field in object_instance.fields" :key="field.field_name">
             <h2 class="subtitle">{{ field.field_title }} | {{ field.field_type }}</h2>
             <input v-model="field.field_value" class="input is-normal mb-4" type="text" placeholder="Normal input">
@@ -16,7 +15,7 @@
         </section>
         <footer class="modal-card-foot">
           <!-- Botões de Ação -->
-          <button class="button is-success" @click="handleSubmit">Save changes</button>
+          <button class="button is-success" @click="handleSubmit">Create</button>
           <button class="button" @click="handleClose">Cancel</button>
         </footer>
       </div>
@@ -42,7 +41,7 @@ export default {
       type: Object,
       required: true,
     },
-    updateUrl: {
+    createEndpoint: {
       type: String,
       required: true,
     },
@@ -55,7 +54,7 @@ export default {
   methods: {
     handleSubmit() {
       // Chame o método para enviar a solicitação de atualização
-      this.sendUpdateRequest();
+      this.sendCreateRequest();
       // Emitir evento para o componente pai com os dados editados
       this.$emit("submit", this.dadosEditados);
 
@@ -64,15 +63,13 @@ export default {
       // Emitir evento de fechamento
       this.$emit("close");
     },
-    sendUpdateRequest() {
+    sendCreateRequest() {
       // Extrair informações necessárias da instância do objeto
-      const userId = this.$store.getters.getUserId;
-      const objectId = this.object_instance.object_id;
+      // const userId = this.$store.getters.getUserId;
+      // const objectId = this.object_instance.object_id;
 
       // Construir o URL de atualização usando a propriedade fornecida pelo pai
-      const updateUrl = `${this.updateUrl}${objectId}/update`;
-      // Construir o URL de atualização
-      //const updateUrl = `http://127.0.0.1:8000/users/${userId}/work_experiences/${objectId}/update`;
+      const createUrl = `${this.createEndpoint}create/`;
 
       // Construir o corpo da solicitação com os dados editados
       const requestBody = {};
@@ -86,11 +83,11 @@ export default {
       };
 
       // Enviar solicitação PUT para atualizar os dados
-      axios.put(updateUrl, requestBody, { headers })
+      axios.post(createUrl, requestBody, { headers })
         .then(response => {
-          console.log('Dados atualizados com sucesso:', response.data);
+          console.log('Dados criados com sucesso:', response.data);
           // Emitir evento de atualização
-          this.$emit("data-updated");
+          this.$emit("data-created");
         })
         .catch(error => {
           console.error('Erro ao atualizar dados:', error);

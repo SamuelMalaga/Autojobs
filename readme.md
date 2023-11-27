@@ -128,3 +128,7 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
     - Botão/Form para adicionar um job via Link do linkedin:
       - Essa feature implica em uma execução do scraper pela API passando parametros e talvez seja assíncrona
 - Dashboards: Página com análises de aproveitamento das aplicações, serve para entender bottlenecks, statuses e alguns pontos fracos de candidaturas e etc...
+
+### Otimizações mapeadas durante o desenvolvimento para a primeira rodada de refatoração
+- API: Juntar as views relacionadas aos mesmos models em classes, assim evita a necessidade de imports redundantes e marcações desnecessárias
+- FrontEnd: modularizar a passagem de informação para os modais (estudar possibilidade de modal único ou criação de um módulo utils)

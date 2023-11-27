@@ -6,9 +6,14 @@
           <p class="card-header-title">
             {{certification.cert_institute}}
           </p>
+          <button class="card-header-icon" aria-label="more options" @click="openEditModal(certification)">
+            <span class="icon" >
+              <font-awesome-icon  icon="pen"  />
+            </span>
+          </button>
           <button class="card-header-icon" aria-label="more options">
             <span class="icon">
-              <i class="fas fa-angle-down" aria-hidden="true"></i>
+              <font-awesome-icon icon="trash" :style="{ color: '#ff0000' }" @click="openDeleteModal(certification)" />
             </span>
           </button>
         </header>
@@ -20,33 +25,53 @@
             <p>De <time datetime="2016-1-1">{{certification.cert_emmited_at}}</time> Até <time datetime="2016-1-1">{{certification.cert_valid_until}}</time></p>
           </div>
         </div>
-        <footer class="card-footer ">
-          <button class="button m-3" @click="openEditModal(certification)">Edit</button>
-          <button class="button is-danger m-3">Delete</button>
-        </footer>
       </div>
+      <button class="button is-sucess m-3" @click="openCreateModal">Add</button>
       <ChangeInfoModal
         :isOpen="isEditModalOpen"
-        :object_instance="languages_instance"
+        :object_instance="certification_instance"
         :updateUrl="endpoint"
         @submit="handleEditSubmit"
         @data-updated="handleDataUpdated"
         @close="closeEditModal"
+      />
+      <DeleteInfoModal
+        :isOpen="isDeleteModalOpen"
+        :object_instance="certification_instance"
+        :deleteEndpoint="endpoint"
+        @submit="handleDeleteSubmit"
+        @data-deleted="handleDataDeleted"
+        @close="closeDeleteModal"
+      />
+      <CreateInfoModal
+        :isOpen="isCreateModalOpen"
+        :fields="object_fields"
+        :createEndpoint="endpoint"
+        @submit="handleCreateSubmit"
+        @data-created="handleCreated"
+        @close="closeCreateModal"
+        :object_instance="object_instance"
       />
     </div>
 </template>
 <script>
 import axios from 'axios';
 import ChangeInfoModal from './ChangeInfoModal.vue';
+import DeleteInfoModal from './DeleteInfoModal.vue';
+import CreateInfoModal from './CreateInfoModal.vue';
 
 export default {
   components: {
-    ChangeInfoModal
+    ChangeInfoModal,
+    DeleteInfoModal,
+    CreateInfoModal
   },
   data() {
     return {
       certifications: [],
       isEditModalOpen: false,
+      isDeleteModalOpen:false,
+      isCreateModalOpen:false,
       object_fields: [
         {
         field_name:"cert_name",
@@ -97,6 +122,7 @@ export default {
     }
   },
   methods: {
+    //<--------------------------------Get Data---------------------------------------->
     fetchCertifications() {
 
       const headers = { Authorization: `Token ${this.token}` };
@@ -109,6 +135,11 @@ export default {
           console.error('Erro ao obter dados da API:', error);
         });
     },
+    handleDataUpdated() {
+      // Lógica para atualizar os dados no componente pai
+      this.fetchCertifications();
+    },
+    //<--------------------------------Edit Data---------------------------------------->
     openEditModal(certification) {
       //Deep copy of the fields to edit
       const object_fieldsCopy = this.object_fields
@@ -119,8 +150,8 @@ export default {
       });
 
       // Atualize os dados no objeto
-      this.languages_instance = {
-        instance_entity:"Language",
+      this.certification_instance = {
+        instance_entity:"Certification",
         object_id: certification.id,
         fields: object_fieldsCopy,
       };
@@ -136,7 +167,64 @@ export default {
       // Feche o modal
       this.closeEditModal();
     },
-    handleDataUpdated() {
+    //<--------------------------------Delete Data---------------------------------------->
+    openDeleteModal(certification){
+      //Deep copy of the fields to edit
+      const object_fieldsCopy = this.object_fields
+
+      // Atualize a cópia com os valores da experiência selecionada
+      object_fieldsCopy.forEach(campo => {
+        campo.field_value = certification[campo.field_name];
+      });
+
+      // Atualize os dados no objeto
+      this.certification_instance = {
+        instance_entity:"Certification",
+        object_id: certification.id,
+        fields: object_fieldsCopy,
+      };
+      this.selectedCertification = { ...certification }
+      this.isDeleteModalOpen = true;
+
+    },
+    closeDeleteModal() {
+      this.isDeleteModalOpen = false;
+    },
+    handleDeleteSubmit(dadosEditados) {
+      // Lógica para enviar dados editados ao backend
+      console.log("Dados Deletados:", deletedData);
+      // Feche o modal
+      this.closeEditModal();
+    },
+    handleDataDeleted(){
+      // Lógica para atualizar os dados no componente pai
+      this.fetchCertifications();
+    },
+    //<--------------------------------Create Data---------------------------------------->
+    openCreateModal() {
+      const object_fieldsCopy = this.object_fields.map(campo => ({
+          ...campo,
+          field_value: "", // ou qualquer valor padrão desejado
+        }));
+
+      this.object_instance = {
+        instance_entity: "Certification",
+        object_id: null, // ou qualquer valor padrão desejado
+        fields: object_fieldsCopy,
+      };
+
+      this.isCreateModalOpen = true;
+    },
+    closeCreateModal() {
+      this.isCreateModalOpen = false;
+    },
+    handleCreateSubmit(dadosEditados) {
+      // Lógica para enviar dados editados ao backend
+      console.log("Dados Criados:");
+      // Feche o modal
+      this.closeCreateModal();
+    },
+    handleCreated(){
       // Lógica para atualizar os dados no componente pai
       this.fetchCertifications();
     },
