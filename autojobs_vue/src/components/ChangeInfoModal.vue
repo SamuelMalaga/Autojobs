@@ -34,6 +34,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isUser: {
+      type: Boolean,
+      required: false,
+    },
     fields: {
       type: Array,
       required: false,
@@ -69,10 +73,26 @@ export default {
       const userId = this.$store.getters.getUserId;
       const objectId = this.object_instance.object_id;
 
-      // Construir o URL de atualização usando a propriedade fornecida pelo pai
-      const updateUrl = `${this.updateUrl}${objectId}/update`;
-      // Construir o URL de atualização
-      //const updateUrl = `http://127.0.0.1:8000/users/${userId}/work_experiences/${objectId}/update`;
+      let updateUrl =''
+
+
+      if(this.object_instance.instance_entity==='User'){
+        updateUrl = `${this.updateUrl}/update`
+        console.log('é tipo user')
+        console.log(updateUrl)
+      } else {
+        // Construir o URL de atualização usando a propriedade fornecida pelo pai
+        console.log('não é tipo user')
+        updateUrl = `${this.updateUrl}${objectId}/update`;
+        console.log(updateUrl)
+      }
+
+      //console.log(this.object_instance.instance_entity)
+
+      //const testUrl = updateUrl
+
+      console.log('testUrl')
+      //console.log(testUrl)
 
       // Construir o corpo da solicitação com os dados editados
       const requestBody = {};
@@ -88,8 +108,16 @@ export default {
       // Enviar solicitação PUT para atualizar os dados
       axios.put(updateUrl, requestBody, { headers })
         .then(response => {
-          console.log('Dados atualizados com sucesso:', response.data);
+          // console.log('Dados atualizados com sucesso:', response.data);
           // Emitir evento de atualização
+          if(this.object_instance.instance_entity==='User'){
+            console.log(requestBody)
+            this.$store.dispatch('updatePartialUserInfo',
+            { bio: requestBody.bio,
+              country: requestBody.country,
+              city: requestBody.city,
+            });
+          }
           this.$emit("data-updated");
         })
         .catch(error => {

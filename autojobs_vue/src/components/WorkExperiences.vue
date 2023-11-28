@@ -50,7 +50,7 @@
         @submit="handleCreateSubmit"
         @data-created="handleCreated"
         @close="closeCreateModal"
-        :object_instance="object_instance"
+        :object_instance="work_experience_instance"
       />
     </div>
 </template>
@@ -218,7 +218,7 @@ export default {
           field_value: "", // ou qualquer valor padrão desejado
         }));
 
-      this.object_instance = {
+      this.work_experience_instance = {
         instance_entity: "Certification",
         object_id: null, // ou qualquer valor padrão desejado
         fields: object_fieldsCopy,
@@ -231,7 +231,7 @@ export default {
     },
     handleCreateSubmit(dadosEditados) {
       // Lógica para enviar dados editados ao backend
-      console.log("Dados Criados:");
+      //console.log("Dados Criados:");
       // Feche o modal
       this.closeCreateModal();
     },

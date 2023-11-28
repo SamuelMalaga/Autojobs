@@ -90,7 +90,7 @@ class Application(models.Model):
     appl_resume = models.FileField(upload_to='media/uploads/', null=True, blank=True, default=None)
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE,null=True)
     bio = models.TextField()
     country = models.CharField(max_length=100)
     city = models.CharField(max_length=100)

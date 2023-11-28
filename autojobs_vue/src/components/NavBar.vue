@@ -14,8 +14,8 @@
       <div id="navbarBasicExample" class="navbar-menu" v-bind:class="{'is-active' : showMobileMenu}">
         <div class="navbar-start"  v-if="$store.getters.isLoggedIn">
           <router-link to="/myProfile"  class="navbar-item"><a class="has-text-white">My Profile</a></router-link>
-          <router-link to="/JobTracker"  class="navbar-item "><a class="has-text-white">Job Tracker</a></router-link>
           <router-link to="/Jobs"  class="navbar-item"><a class="has-text-white">Jobs</a></router-link>
+          <router-link to="/JobTracker"  class="navbar-item "><a class="has-text-white">Job Tracker</a></router-link>
           <router-link to="/Dashboard"  class="navbar-item"><a class="has-text-white">Dashboard</a></router-link>
         </div>
 

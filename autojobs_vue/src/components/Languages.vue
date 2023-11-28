@@ -205,7 +205,7 @@ export default {
     },
     handleCreateSubmit(dadosEditados) {
       // Lógica para enviar dados editados ao backend
-      console.log("Dados Criados:");
+      //console.log("Dados Criados:");
       // Feche o modal
       this.closeCreateModal();
     },

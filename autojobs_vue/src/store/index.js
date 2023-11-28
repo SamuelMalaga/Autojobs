@@ -16,6 +16,12 @@ export default createStore({
     setLoggedIn(state, value) {
       state.isLoggedIn = value;
     },
+    updatePartialUserInfo(state, { bio, country, city }) {
+      // Atualizar apenas as informações específicas do usuário
+      state.FullUserInfo.bio = bio;
+      state.FullUserInfo.country = country;
+      state.FullUserInfo.city = city;
+    },
   },
   actions: {
     updateFullUserInfo({ commit }, FullUserInfo) {
@@ -32,6 +38,10 @@ export default createStore({
     logout({ commit }) {
       // Lógica de logout
       commit('setLoggedIn', false);
+    },
+    updatePartialUserInfo({ commit }, { bio, country, city }) {
+      // Chamar a mutation para atualizar as informações do usuário
+      commit('updatePartialUserInfo', { bio, country, city });
     },
   },
   getters: {

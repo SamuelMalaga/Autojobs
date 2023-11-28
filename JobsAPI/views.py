@@ -572,3 +572,17 @@ def logout_test(request):
         # Se não houver token no cabeçalho, retorne uma resposta de erro
         return Response({"detail": "Token não fornecido"}, status=status.HTTP_401_UNAUTHORIZED)
 
+@api_view(['PUT'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def update_user_profile(request, user_id):
+    try:
+        user_profile = UserProfile.objects.get(user=user_id)
+    except WorkExperience.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = UserProfileSerializer(user_profile, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

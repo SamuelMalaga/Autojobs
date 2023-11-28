@@ -50,7 +50,7 @@
         @submit="handleCreateSubmit"
         @data-created="handleCreated"
         @close="closeCreateModal"
-        :object_instance="object_instance"
+        :object_instance="education_experience_instance"
       />
     </div>
 </template>
@@ -209,7 +209,7 @@ export default {
           field_value: "", // ou qualquer valor padrão desejado
         }));
 
-      this.object_instance = {
+      this.education_experience_instance = {
         instance_entity: "Education",
         object_id: null, // ou qualquer valor padrão desejado
         fields: object_fieldsCopy,
@@ -222,7 +222,7 @@ export default {
     },
     handleCreateSubmit(dadosEditados) {
       // Lógica para enviar dados editados ao backend
-      console.log("Dados Criados:");
+     // console.log("Dados Criados:");
       // Feche o modal
       this.closeCreateModal();
     },
