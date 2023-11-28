@@ -5,6 +5,7 @@ from .serializers import JobSerializer, ApplicationSerializer, CertificationSeri
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.db import IntegrityError
@@ -21,19 +22,27 @@ from django.contrib.auth import authenticate, logout
 # ---------------------------------------------------------------
 # <---                  Job Related Views                    --->
 # ---------------------------------------------------------------
-@api_view(['GET','POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+@api_view(['GET'])
 def job_list(request):
-  if request.method =='GET':
+    # Configurar a paginação
+    paginator = PageNumberPagination()
+    paginator.page_size = 25  # Defina o número de itens por página
+
     jobs = Job.objects.all()
-    serializer = JobSerializer(jobs, many=True)
-    return Response(serializer.data)
-  if request.method == 'POST':
-    serializer = JobSerializer(data=request.data)
-    if serializer.is_valid():
-      serializer.save()
-      return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # Paginar os resultados
+    result_page = paginator.paginate_queryset(jobs, request)
+    serializer = JobSerializer(result_page, many=True)
+
+    # Retornar a resposta paginada
+    return paginator.get_paginated_response(serializer.data)
+
+    # jobs = Job.objects.all()
+    # serializer = JobSerializer(jobs, many=True)
+    # return Response(serializer.data)
+
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
