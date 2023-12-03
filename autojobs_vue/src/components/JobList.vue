@@ -12,8 +12,9 @@
                 <i class="fas fa-search" aria-hidden="true"></i>
               </span>
             </p>
-            <a class="pagination-previous">Add job</a>
-            <a class="pagination-previous">Run scraper</a>
+            <a class="pagination-previous"  @click="showModal">Add job</a>
+            <a class="pagination-previous" >Run scraper</a>
+            <ExecuteBotModal v-if="isModalVisible" @close="closeModal" />
           </div>
           <div class="container p-2">
             <div  v-for="job in jobs" :key="job.id" class="p-2">
@@ -65,12 +66,16 @@
 
 <script>
 import axios from 'axios';
-
+import ExecuteBotModal from './ExecuteBotModal.vue';
 
 
 export default {
+  components: {
+    ExecuteBotModal,
+  },
   data() {
     return {
+      isModalVisible: false,
       jobs: [],
       expandedCards: [],
       nextPageUrl: null,
@@ -137,7 +142,13 @@ export default {
     },
     openJobLink(jobLink) {
         window.open(jobLink, '_blank');
-    }
+    },
+    showModal() {
+      this.isModalVisible = true;
+    },
+    closeModal() {
+      this.isModalVisible = false;
+    },
   },
   mounted() {
     this.fetchJobs('http://127.0.0.1:8000/jobs/');
