@@ -16,6 +16,7 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, logout
+import json
 
 
 
@@ -71,7 +72,7 @@ def job_detail(request,id):
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def execute_scraper(request):
+def execute_FULLpublicJscraper(request):
     # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
     script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/FULLpublicJscraper.js'
     job_name = request.GET.get('job_name')
@@ -86,6 +87,32 @@ def execute_scraper(request):
     try:
         # Execute o script JavaScript.
         result = subprocess.run(['node', script_path, '--job-name', job_name_str,'--job-location', job_location_str,'--job-type', job_type_str], capture_output=True, text=True)
+
+        # Verifique a saída do processo.
+        if result.returncode == 0:
+            return JsonResponse({'message': 'Script executado com sucesso', 'output': result.stdout})
+        else:
+            return JsonResponse({'message': 'Erro na execução do script', 'error_output': result.stderr}, status=500)
+    except Exception as e:
+        return JsonResponse({'message': 'Erro na execução do script', 'error_message': str(e)}, status=500)
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+@api_view(['POST'])
+def execute_LinkPublicScraper(request):
+    # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
+    script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/LinkPublicScraper.js'
+
+    request_body = request.body.decode('utf-8')
+
+    JSON_data = json.loads(request_body)
+
+    job_link = JSON_data.get('job_link', None)
+
+    print(job_link)
+
+    try:
+        # Execute o script JavaScript.
+        result = subprocess.run(['node', script_path, '--job_link', job_link], capture_output=True, text=True)
 
         # Verifique a saída do processo.
         if result.returncode == 0:

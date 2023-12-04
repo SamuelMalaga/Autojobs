@@ -25,7 +25,8 @@ urlpatterns = [
     path('jobs/', views.job_list),
     path('jobs/<int:id>', views.job_detail),
     # <-----Scraper related urls----->
-    path('execute-scraper/', views.execute_scraper, name='execute_scraper'),
+    path('execute_full_scraper/', views.execute_FULLpublicJscraper, name='execute_scraper'),
+    path('execute_link_scraper/', views.execute_LinkPublicScraper, name='execute_scraper'),
     # <-----Application related urls----->
     path('users/<int:user_id>/applications/', views.application_list),
     path('users/<int:user_id>/applications/<int:appl_id>/details', views.get_application_detail),

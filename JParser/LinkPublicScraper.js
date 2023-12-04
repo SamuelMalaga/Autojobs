@@ -5,7 +5,7 @@ const fs = require('fs');
 
 const argv = yargs
   .options({
-    'job-Link': {
+    'job_link': {
       describe: 'Job link',
       demandOption: true, // Defina como true se o argumento for obrigatório
       type: 'string', // Especifique o tipo do argumento (string neste caso)
@@ -70,7 +70,7 @@ async function getTextContentByXPath(page, xpath) {
   const browser = await pup.launch({headless:false});
   const page = await browser.newPage();
 
-  const jobLink = argv['job-Link'];
+  const jobLink = argv['job_link'];
   console.log(jobLink)
 
   await page.goto(jobLink)
@@ -80,12 +80,17 @@ async function getTextContentByXPath(page, xpath) {
   const jobCompany = await getTextContentByXPath(page, '/html/body/main/section[1]/div/section[2]/div/div[1]/div/h4/div[1]/span[1]')
   const jobLocation = await getTextContentByXPath(page,'/html/body/main/section[1]/div/section[2]/div/div[1]/div/h4/div[1]/span[2]')
 
+  console.log(jobDescriptionHTMLContent)
+  console.log(jobTitle)
+  console.log(jobCompany)
+  console.log(jobLocation)
+
   const job = {
     "job_id": null,
-    "job_title":jobTitle.trim(),
-    "company_name": jobCompany.trim(),
+    "job_title": await jobTitle.trim(),
+    "company_name": await jobCompany.trim(),
     "job_link": jobLink,
-    "job_description" : jobDescriptionHTMLContent.trim(),
+    "job_description" : await jobDescriptionHTMLContent.trim(),
     "double_Check": false,
     "source" : "linkedin"
   }
