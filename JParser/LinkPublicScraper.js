@@ -75,7 +75,7 @@ async function getTextContentByXPath(page, xpath) {
 
   await page.goto(jobLink)
 
-  const jobDescriptionHTMLContent = await getInnerHTMLByXPath(page, '//*[@id="main-content"]/section[1]/div/div/section[2]/div/div/section/div')
+  const jobDescriptionHTMLContent = await getInnerHTMLByXPath(page, '/html/body/main/section[1]/div/div/section[1]/div/div/section/div')
   const jobTitle = await getTextContentByXPath(page,'/html/body/main/section[1]/div/section[2]/div/div[1]/div/h1')
   const jobCompany = await getTextContentByXPath(page, '/html/body/main/section[1]/div/section[2]/div/div[1]/div/h4/div[1]/span[1]')
   const jobLocation = await getTextContentByXPath(page,'/html/body/main/section[1]/div/section[2]/div/div[1]/div/h4/div[1]/span[2]')

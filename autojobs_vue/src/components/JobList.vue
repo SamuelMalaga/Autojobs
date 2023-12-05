@@ -42,21 +42,30 @@
           </div>
           <div class="panel-block">
             <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-              <a class="pagination-previous">Previous</a>
-              <a class="pagination-next">Next page</a>
-              <ul class="pagination-list">
-                <li v-for="page in getPaginationRange()" :key="page">
-                  <a
-                    v-if="page !== 'ellipsis'"
-                    class="pagination-link"
-                    @click="fetchJobs(`http://127.0.0.1:8000/jobs/?page=${page}`)"
-                    :class="{ 'is-current': page === currentPage }"
-                  >
-                    {{ page }}
-                  </a>
-                  <span v-else class="pagination-ellipsis">&hellip;</span>
+              <a class="pagination-previous"  @click="fetchJobs(previousPageUrl)">Previous</a>
+              <div class="pagination-list">
+                <input class="input" type="text" placeholder="Disabled input" disabled>
+              </div>
+              <a class="pagination-next" @click="fetchJobs(nextPageUrl)">Next page</a>
+              <!-- <ul class="pagination-list">
+                <li v-if="currentPage >= 3">
+                  <a class="pagination-link" aria-label="Goto page 1" @click="fetchJobs(`http://127.0.0.1:8000/jobs/?page=1`)">1</a>
                 </li>
-              </ul>
+                <li >
+                  <span class="pagination-ellipsis">&hellip;</span>
+                </li>
+                <li>
+                  <a class="pagination-link" aria-label="current_page">{{ this.currentPage }}</a>
+                </li>
+                <li>
+                  <span class="pagination-ellipsis">&hellip;</span>
+                </li>
+                <li v-if="currentPage < totalPages">
+                  <a class="pagination-link" aria-label="Goto page {{ totalPages }}" @click="fetchJobs(`http://127.0.0.1:8000/jobs/?page=${totalPages}`)">
+                    {{ totalPages }}
+                  </a>
+                </li>
+              </ul> -->
             </nav>
           </div>
         </nav>
@@ -81,6 +90,9 @@ export default {
       nextPageUrl: null,
       previousPageUrl: null,
       currentPage: 1,
+      totalPages:0,
+      previousPage:0,
+      nextPage:2,
       itemsPerPage: 25,
       totalItems: 0,
     };
@@ -94,6 +106,7 @@ export default {
         this.previousPageUrl = response.data.previous;
         // Atualize a página atual com base na URL
         this.totalItems = response.data.count;
+        this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
         const pageQueryParam = new URLSearchParams(new URL(url).search).get('page');
         this.currentPage = pageQueryParam ? parseInt(pageQueryParam, 9) : 1;
       } catch (error) {
@@ -118,6 +131,7 @@ export default {
       if (endPage - startPage + 1 < visiblePages) {
         startPage = Math.max(1, endPage - visiblePages + 1);
       }
+
 
       const paginationRange = [];
       if (startPage > 1) {
