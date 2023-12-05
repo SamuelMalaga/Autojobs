@@ -69,9 +69,9 @@ def job_detail(request,id):
 # ---------------------------------------------------------------
 # <---                Scraper Related Views                  --->
 # ---------------------------------------------------------------
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def execute_FULLpublicJscraper(request):
     # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
     script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/FULLpublicJscraper.js'

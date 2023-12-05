@@ -12,9 +12,10 @@
                 <i class="fas fa-search" aria-hidden="true"></i>
               </span>
             </p>
-            <a class="pagination-previous"  @click="showModal">Add job</a>
-            <a class="pagination-previous" >Run scraper</a>
-            <ExecuteBotModal v-if="isModalVisible" @close="closeModal" />
+            <a class="pagination-previous"  @click="showAddJobViaLinkModal">Add job</a>
+            <a class="pagination-previous" @click="showRunJobScraperOnDemandModal">Run scraper</a>
+            <AddJobViaLinkModal v-if="isAddJobViaLinkModalVisible" @close="closeAddJobViaLinkModal" />
+            <RunJobScraperOnDemandModal v-if="isRunJobScraperOnDemandModalVisible" @close="closeRunJobScraperOnDemandModal" />
           </div>
           <div class="container p-2">
             <div  v-for="job in jobs" :key="job.id" class="p-2">
@@ -75,16 +76,19 @@
 
 <script>
 import axios from 'axios';
-import ExecuteBotModal from './ExecuteBotModal.vue';
+import AddJobViaLinkModal from './ModalComponents/AddJobViaLinkModal.vue';
+import RunJobScraperOnDemandModal from './ModalComponents/RunJobScraperOnDemandModal.vue';
 
 
 export default {
   components: {
-    ExecuteBotModal,
+    AddJobViaLinkModal,
+    RunJobScraperOnDemandModal
   },
   data() {
     return {
-      isModalVisible: false,
+      isAddJobViaLinkModalVisible: false,
+      isRunJobScraperOnDemandModalVisible:false,
       jobs: [],
       expandedCards: [],
       nextPageUrl: null,
@@ -157,11 +161,17 @@ export default {
     openJobLink(jobLink) {
         window.open(jobLink, '_blank');
     },
-    showModal() {
-      this.isModalVisible = true;
+    showAddJobViaLinkModal() {
+      this.isAddJobViaLinkModalVisible = true;
     },
-    closeModal() {
-      this.isModalVisible = false;
+    closeAddJobViaLinkModal() {
+      this.isAddJobViaLinkModalVisible = false;
+    },
+    showRunJobScraperOnDemandModal() {
+      this.isRunJobScraperOnDemandModalVisible = true;
+    },
+    closeRunJobScraperOnDemandModal() {
+      this.isRunJobScraperOnDemandModalVisible = false;
     },
   },
   mounted() {

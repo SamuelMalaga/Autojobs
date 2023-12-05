@@ -5,7 +5,7 @@
       <div class="modal-card">
         <header class="modal-card-head">
           <p class="modal-card-title">Add new Job via link </p>
-          <button class="delete" aria-label="close" @click="closeModal"></button>
+          <button class="delete" aria-label="close" @click="closeAddJobViaLinkModal"></button>
         </header>
         <section class="modal-card-body">
           <p>Job Link</p>
@@ -13,8 +13,8 @@
         </section>
         <footer class="modal-card-foot">
           <!-- Botões de Ação -->
-          <button class="button is-success" @click="handleSubmit">Save changes</button>
-          <button class="button" @click="closeModal">Cancel</button>
+          <button class="button is-success" @click="handleSubmit">Add Job</button>
+          <button class="button" @click="closeAddJobViaLinkModal">Cancel</button>
         </footer>
       </div>
     </div>
@@ -26,7 +26,7 @@ import axios from 'axios';
 
 export default {
   methods: {
-    closeModal() {
+    closeAddJobViaLinkModal() {
       this.$emit('close');
     },
     async handleSubmit() {
