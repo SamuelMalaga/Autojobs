@@ -43,9 +43,9 @@ async function insertJobIntoDatabase(databaseName, job) {
     "linkedin"
     ], (err) => {
         if (!err) {
-            console.log(`Inserido(veio do jobs): ${job.job_title}`);
+            console.log(`Inserido`);
         } else {
-            console.error(`Erro ao inserir ${job.job_title}: ${err.message}`);
+            console.error(`Erro ao inserir`);
         }
     });
 
@@ -66,12 +66,12 @@ async function getTextContentByXPath(page, xpath) {
 
 (async () => {
   const startTime = new Date();
-  console.log(`Iniciando scraping em ${startTime.getHours()}:${startTime.getMinutes()}:${startTime.getSeconds()}`)
-  const browser = await pup.launch({headless:false});
+  //console.log(`Iniciando scraping em ${startTime.getHours()}:${startTime.getMinutes()}:${startTime.getSeconds()}`)
+  const browser = await pup.launch();
   const page = await browser.newPage();
 
   const jobLink = argv['job_link'];
-  console.log(jobLink)
+  //console.log(jobLink)
 
   await page.goto(jobLink)
 
