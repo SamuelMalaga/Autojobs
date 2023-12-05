@@ -32,7 +32,9 @@
               <div class="card-content" v-if="expandedCards.includes(job.id)" >
                 <div class="content">
                   <h3>Job Description</h3>
-                  <p >{{ job.job_description }}</p>
+                  <div v-html="job.job_description">
+                  </div>
+                  <!-- <p >{{ job.job_description }}</p> -->
                   <a  @click="openJobLink(job.job_link)">Job Link</a>
                 </div>
               </div>
