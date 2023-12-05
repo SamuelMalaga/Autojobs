@@ -132,4 +132,4 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
 ### Otimizações mapeadas durante o desenvolvimento para a primeira rodada de refatoração
 - API: Juntar as views relacionadas aos mesmos models em classes, assim evita a necessidade de imports redundantes e marcações desnecessárias (Class Based Views)
 - FrontEnd: modularizar a passagem de informação para os modais (estudar possibilidade de modal único ou criação de um módulo utils)
-- Scraper: fazer o bot scraper trazer todo conteúdo do HTML(tags inclusas) ajuda na renderização das descrições
+- Scraper: Criar uma ferramenta de log do scraper

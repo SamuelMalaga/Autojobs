@@ -112,7 +112,13 @@ def execute_LinkPublicScraper(request):
 
     try:
         # Execute o script JavaScript.
-        result = subprocess.run(['node', script_path, '--job_link', job_link], capture_output=True, text=True)
+        result = subprocess.run(
+            ['node', script_path, '--job_link', job_link],
+            capture_output=True,
+            text=True,
+            encoding='utf-8',  # Set the encoding explicitly
+            errors='replace',  # Replace or ignore characters that cannot be decoded
+        )
 
         # Verifique a saída do processo.
         if result.returncode == 0:

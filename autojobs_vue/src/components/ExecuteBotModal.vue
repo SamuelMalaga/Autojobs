@@ -22,10 +22,34 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   methods: {
     closeModal() {
       this.$emit('close');
+    },
+    async handleSubmit() {
+      // Get the input value
+      const jobLink = document.querySelector('.input.is-link').value;
+
+      // Make a POST request to your Django backend using Axios
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/execute_link_scraper/', {
+          job_link: jobLink,
+        });
+
+        // Check if the request was successful (status code 2xx)
+        if (response.status === 200) {
+          // Handle success (e.g., close the modal)
+          this.closeModal();
+        } else {
+          // Handle error (e.g., show an error message)
+          console.error('Error:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
     },
   },
 };

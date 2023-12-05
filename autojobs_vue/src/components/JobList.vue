@@ -43,9 +43,7 @@
           <div class="panel-block">
             <nav class="pagination is-centered" role="navigation" aria-label="pagination">
               <a class="pagination-previous"  @click="fetchJobs(previousPageUrl)">Previous</a>
-              <div class="pagination-list">
-                <input class="input" type="text" placeholder="Disabled input" disabled>
-              </div>
+
               <a class="pagination-next" @click="fetchJobs(nextPageUrl)">Next page</a>
               <!-- <ul class="pagination-list">
                 <li v-if="currentPage >= 3">
