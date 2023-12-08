@@ -1,8 +1,7 @@
 const pup = require('puppeteer');
 const sqlite3 = require('sqlite3').verbose();
 const yargs = require('yargs');
-const fs = require('fs');
-const { error } = require('console');
+
 
 const argv = yargs
   .options({
@@ -29,101 +28,9 @@ function delayTime(time) {
     setTimeout(resolve, time);
   });
 }
-
-async function scrollToEnd(page) {
-  let previousHeight = 0;
-
-  await page.evaluate(() => {
-    window.scrollBy(0, window.innerHeight);
-  });
-
-  await delayTime(1000); // Espera 4 segundos.
-
-  const newHeight = await page.evaluate(() => {
-    return document.body.scrollHeight;
-  });
-
-  const successAlert = await page.evaluate(() => {
-    const alertDiv = document.querySelector('div[role="alert"][type="success"]');
-    return alertDiv ? alertDiv.classList.contains('hidden') : false;
-  });
-
-  if (!successAlert) {
-      console.log('A div de alerta de sucesso não está mais oculta. Encerrando a execução.');
-      return true;
-    }
-
-  // Tente clicar no botão "Ver mais vagas" com tratamento de erro.
-  try {
-    await page.click('button[aria-label="Ver mais vagas"]');
-  } catch (error) {
-
-  }
-
-  return false; // A página ainda não atingiu o final.
-}
-async function extractDataFromPage(page) {
-  const data = await page.evaluate(() => {
-    const items = [];
-    const xpath = '//*[@id="main-content"]/section[2]/ul/li/div';
-    const iterator = document.evaluate(xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-
-    for (let i = 0; i < iterator.snapshotLength; i++) {
-      const item = iterator.snapshotItem(i);
-      const dataEntityUrn = item.getAttribute('data-entity-urn');
-      items.push({
-        JobId: dataEntityUrn.match(/\d+$/)[0],
-        JobTitle:"",
-        JobDescription:""
-       });
-    }
-
-    return items;
-  });
-
-  return data;
-}
-async function saveDataToJSON(data, filename) {
-  try {
-    const jsonData = JSON.stringify(data, null, 2); // Converte os dados em formato JSON com recuo de 2 espaços.
-    fs.writeFileSync(filename, jsonData); // Salva os dados em um arquivo JSON.
-
-    console.log(`Dados salvos em ${filename}`);
-  } catch (error) {
-    console.error('Erro ao salvar os dados em JSON:', error);
-  }
-}
-async function saveDataToSQLite(data) {
-  const db = new sqlite3.Database('jobs.db');
-  db.serialize(() => {
-    db.run('BEGIN TRANSACTION');
-
-    const stmt = db.prepare('INSERT INTO jobs (jobId, title, description) VALUES (?, ?, ?)');
-
-    for (const item of data) {
-      stmt.run(item.JobId, item.JobTitle, item.JobDescription);
-    }
-
-    stmt.finalize();
-    db.run('COMMIT');
-  });
-
-  db.close();
-}
-
 async function findAllChildrenByXpath(page, xpathString){
   return page.$x(xpathString)
 }
-
-async function findChildByXpath(page, xpathString){
-  return page.$x(xpathString)
-}
-/**
- * Obtém o valor de uma propriedade de um elemento HTML usando um XPath.
- * @param {string} xpath - A expressão XPath para localizar o elemento na página.
- * @param {string} propriedade - O nome da propriedade que você deseja obter do elemento.
- * @returns {string | null} - O valor da propriedade, ou null se o elemento não for encontrado.
- */
 async function getPropertyByXpath(page, xpath, propriedade) {
   try {
     const elemento = await page.waitForXPath(xpath); // Substitua "page" pela sua referência à página.
@@ -138,24 +45,9 @@ async function getPropertyByXpath(page, xpath, propriedade) {
       return null;
     }
   } catch (error) {
-    console.error('Erro ao obter propriedade por XPath:', error);
     return null;
   }
 }
-async function isDescriptionValid(list, currentIndex){
-  //let previousIndex = currentIndex -1;
-  let previousText = list[currentIndex].job_description;
-  let currentText = list[currentIndex+1]
-  if (previousText !== null && currentText === previousText) {
-    return true;
-  };
-  return false;
-}
-/**
- * Insere os objetos job em uma tabela SQLite.
- * @param {string} databaseName - O nome do banco de dados SQLite.
- * @param {Array} jobs - Um array de objetos job a serem inseridos na tabela.
- */
 async function insertJobsIntoDatabase(databaseName, jobs) {
   const db = new sqlite3.Database(databaseName);
 
@@ -175,9 +67,7 @@ async function insertJobsIntoDatabase(databaseName, jobs) {
           "linkedin"
       ], (err) => {
           if (!err) {
-              console.log(`Inserido(veio do jobs): ${job.job_title}`);
           } else {
-              console.error(`Erro ao inserir ${job.job_title}: ${err.message}`);
           }
       });
   });
@@ -194,7 +84,6 @@ async function getPropertyWithFallback(page, xpath, property, maxRetries) {
       result = await element.evaluate((el, prop) => el.getAttribute(prop), property);
       break; // Se tiver sucesso, saia do loop.
     } catch (error) {
-      console.error(`Erro ao obter ${property} - Tentativa ${retries + 1}`);
       retries++;
     }
   }
@@ -206,11 +95,9 @@ async function getTextContentByXPath(page, xpath) {
     const element = await page.waitForXPath(xpath);
     return element ? await element.evaluate(element => element.textContent) : null;
   } catch (error) {
-    console.error(`Erro ao obter texto do XPath '${xpath}': ${error.message}`);
     return null;
   }
 }
-
 async function parseLiItems(page, maxItens) {
   let itensColetados = 0;
   const resultados = new Array();
@@ -220,8 +107,7 @@ async function parseLiItems(page, maxItens) {
     //Index in the <ul> starting point is 1
     const numberOfLis = await findAllChildrenByXpath(page, '//*[@id="main-content"]/section[2]/ul/li')
     liIndex = itensColetados + 1
-    //
-    //console.log('valor LIiNDEX' ,liIndex)
+
     if(liIndex === numberOfLis.length){
       break
     }
@@ -268,9 +154,7 @@ async function parseLiItems(page, maxItens) {
 
     try {
       await page.click('button[aria-label="Ver mais vagas"]');
-      console.log('achou o button')
     } catch (error) {
-      console.log('não achou o button')
     }
 
     //const randomDelay = Math.floor(Math.random() * (10000 - 8000 + 1)) + 8000;
@@ -302,8 +186,6 @@ async function cleanUpParsedResults(parsedResults) {
   function cleanText(text) {
     if (text !== null) {
       text = text.replace(/\n/g, '').replace(/\s+/g, ' ').trim();
-
-      //console.log('veio do cleantext',text)
       return text
     } else {
       // Lida com o caso em que 'text' é nulo, se necessário.
@@ -340,16 +222,17 @@ async function cleanUpParsedResults(parsedResults) {
 
 
 (async () => {
-  const startTime = new Date();
-  console.log(`Iniciando scraping em ${startTime.getHours()}:${startTime.getMinutes()}:${startTime.getSeconds()}`)
-  const browser = await pup.launch({headless:false});
+
+  const browser = await pup.launch(
+    {
+      headless:false,
+      args: ['--lang=en-US']
+    });
   const page = await browser.newPage();
 
   const jobName = encodeURIComponent(argv['job-name']);
   const jobLocation = encodeURIComponent(argv['job-location']);
   const jobType = encodeURIComponent(argv['job-type']);
-
-  console.log(`Parametros recebidos e seus tipos: ${jobName} | ${typeof jobName} | ${jobLocation} | ${typeof jobLocation}| ${jobType} | ${typeof jobType} | `)
 
   // Defina o tamanho da tela visível, por exemplo, 1200x800 pixels
   await page.setViewport({ width: 1359, height: 947 });
@@ -363,19 +246,13 @@ async function cleanUpParsedResults(parsedResults) {
 
   const rawOutput = await parseLiItems(page, 200);
 
-  console.log('Jobs coletados',rawOutput.length);
 
   const cleanedOutput = await cleanUpParsedResults(rawOutput);
 
-  //console.log(cleanedOutput)
-
   await insertJobsIntoDatabase('C:/Users/SamuelMendesMalaga/Documents/Autojobs/SQLiteDB/autojobs.db',cleanedOutput )
 
-  //console.log(cleanedOutput)
-
-
   const endTime = new Date();
-  console.log(`Encerrando scraping em ${endTime.getHours()}:${endTime.getMinutes()}:${endTime.getSeconds()}`)
+
   await browser.close();
 
 

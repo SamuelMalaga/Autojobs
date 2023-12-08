@@ -23,9 +23,9 @@ import json
 # ---------------------------------------------------------------
 # <---                  Job Related Views                    --->
 # ---------------------------------------------------------------
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def job_list(request):
     # Configurar a paginação
     paginator = PageNumberPagination()
@@ -69,9 +69,9 @@ def job_detail(request,id):
 # ---------------------------------------------------------------
 # <---                Scraper Related Views                  --->
 # ---------------------------------------------------------------
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def execute_FULLpublicJscraper(request):
     # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
     script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/FULLpublicJscraper.js'
@@ -95,9 +95,9 @@ def execute_FULLpublicJscraper(request):
             return JsonResponse({'message': 'Erro na execução do script', 'error_output': result.stderr}, status=500)
     except Exception as e:
         return JsonResponse({'message': 'Erro na execução do script', 'error_message': str(e)}, status=500)
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def execute_LinkPublicScraper(request):
     # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
     script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/LinkPublicScraper.js'
@@ -132,13 +132,18 @@ def execute_LinkPublicScraper(request):
 # <---              Application Related Views                --->
 # ---------------------------------------------------------------
 @api_view(['GET','POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def application_list(request,user_id):
   if request.method =='GET':
     applications = Application.objects.filter(appl_user=user_id)
     serializer = ApplicationSerializer(applications, many=True)
-    return Response(serializer.data)
+    status_options = dict(Application.APPL_STATUSES)
+    response_data = {
+            'applications': serializer.data,
+            'status_options': status_options,
+        }
+    return Response(response_data)
   if request.method == 'POST':
     serializer = ApplicationSerializer(data=request.data)
     if serializer.is_valid():
@@ -149,6 +154,18 @@ def application_list(request,user_id):
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_application_detail(request, user_id, appl_id):
+    try:
+        application = Application.objects.get(appl_user=user_id, pk=appl_id)
+    except Application.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ApplicationSerializer(application)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def get_application_statuses(request, user_id, appl_id):
     try:
         application = Application.objects.get(appl_user=user_id, pk=appl_id)
     except Application.DoesNotExist:
@@ -191,15 +208,12 @@ def create_user_application(request, user_id):
     user = get_object_or_404(User, pk=user_id)
 
     if request.method == 'POST':
-        # Certifique-se de passar o contexto para o serializer
         serializer = ApplicationSerializer(data=request.data, context={'request': request})
 
         # print('user_id',user.id)
 
         if serializer.is_valid():
-            # Adicione o usuário à instância do serializer
             serializer.validated_data['appl_user'] = user
-            print('serializer Data',serializer.validated_data)
             instance = serializer.save()
             data = ApplicationSerializer(instance).data
             return Response(data, status=status.HTTP_201_CREATED)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from datetime import datetime
+from django.utils import timezone
 class Job(models.Model):
     job_id = models.IntegerField(null=True)
     job_title = models.TextField(null=True)
@@ -82,9 +83,9 @@ class Application(models.Model):
         # Adicione mais opções conforme necessário
     ]
 
-    appl_status = models.CharField(max_length=20, choices=APPL_STATUSES)
-    appl_closed_at = models.DateTimeField()
-    appl_started_at = models.DateTimeField()
+    appl_status = models.CharField(max_length=20, choices=APPL_STATUSES, default='Screening')
+    appl_closed_at = models.DateTimeField(null=True, blank=True,default=datetime.min)
+    appl_started_at = models.DateTimeField(auto_now_add=True)
     appl_job = models.ForeignKey(Job, on_delete=models.PROTECT, null=True)
     appl_user = models.ForeignKey(User, on_delete=models.PROTECT,null=True)
     appl_resume = models.FileField(upload_to='media/uploads/', null=True, blank=True, default=None)

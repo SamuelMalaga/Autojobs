@@ -35,38 +35,23 @@
                   <h3>Job Description</h3>
                   <div v-html="job.job_description">
                   </div>
-                  <!-- <p >{{ job.job_description }}</p> -->
                   <a  @click="openJobLink(job.job_link)">Job Link</a>
+                </div>
+                <div class="container" id="job_actions">
+                  <a class="pagination-previous" @click="showCreateApplicationModal">Create Application</a>
+                  <CreateApplicationModal v-if="isCreateApplicationModalVisible"
+                  :TargetJob ="job"
+                  @close="closeCreateApplicationModal" />
                 </div>
               </div>
             </div>
-            </div>
+          </div>
 
           </div>
           <div class="panel-block">
             <nav class="pagination is-centered" role="navigation" aria-label="pagination">
               <a class="pagination-previous"  @click="fetchJobs(previousPageUrl)">Previous</a>
-
               <a class="pagination-next" @click="fetchJobs(nextPageUrl)">Next page</a>
-              <!-- <ul class="pagination-list">
-                <li v-if="currentPage >= 3">
-                  <a class="pagination-link" aria-label="Goto page 1" @click="fetchJobs(`http://127.0.0.1:8000/jobs/?page=1`)">1</a>
-                </li>
-                <li >
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li>
-                <li>
-                  <a class="pagination-link" aria-label="current_page">{{ this.currentPage }}</a>
-                </li>
-                <li>
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li>
-                <li v-if="currentPage < totalPages">
-                  <a class="pagination-link" aria-label="Goto page {{ totalPages }}" @click="fetchJobs(`http://127.0.0.1:8000/jobs/?page=${totalPages}`)">
-                    {{ totalPages }}
-                  </a>
-                </li>
-              </ul> -->
             </nav>
           </div>
         </nav>
@@ -78,17 +63,20 @@
 import axios from 'axios';
 import AddJobViaLinkModal from './ModalComponents/AddJobViaLinkModal.vue';
 import RunJobScraperOnDemandModal from './ModalComponents/RunJobScraperOnDemandModal.vue';
+import CreateApplicationModal from './ModalComponents/CreateApplicationModal.vue';
 
 
 export default {
   components: {
     AddJobViaLinkModal,
-    RunJobScraperOnDemandModal
+    RunJobScraperOnDemandModal,
+    CreateApplicationModal
   },
   data() {
     return {
       isAddJobViaLinkModalVisible: false,
       isRunJobScraperOnDemandModalVisible:false,
+      isCreateApplicationModalVisible:false,
       jobs: [],
       expandedCards: [],
       nextPageUrl: null,
@@ -104,7 +92,10 @@ export default {
   methods: {
     async fetchJobs(url) {
       try {
-        const response = await axios.get(url);
+        const headers = {
+          Authorization: `Token ${localStorage.getItem('token')}`,
+        };
+        const response = await axios.get(url,{headers});
         this.jobs = response.data.results;
         this.nextPageUrl = response.data.next;
         this.previousPageUrl = response.data.previous;
@@ -172,6 +163,12 @@ export default {
     },
     closeRunJobScraperOnDemandModal() {
       this.isRunJobScraperOnDemandModalVisible = false;
+    },
+    showCreateApplicationModal() {
+      this.isCreateApplicationModalVisible = true;
+    },
+    closeCreateApplicationModal() {
+      this.isCreateApplicationModalVisible = false;
     },
   },
   mounted() {

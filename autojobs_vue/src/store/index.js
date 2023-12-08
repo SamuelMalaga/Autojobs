@@ -5,6 +5,7 @@ export default createStore({
     FullUserInfo: null,
     userId :null,
     isLoggedIn: false,
+    baseURL:'http://127.0.0.1:8000/'
   },
   mutations: {
     setFullUserInfo(state, FullUserInfo) {
@@ -47,6 +48,7 @@ export default createStore({
   getters: {
     getFullUserInfo: (state) => state.FullUserInfo,
     getUserId: (state) => state.userId,
-    isLoggedIn: (state)=> state.isLoggedIn
+    isLoggedIn: (state)=> state.isLoggedIn,
+    getBaseURL: (state)=> state.baseURL
   },
 });

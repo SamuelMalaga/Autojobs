@@ -9,6 +9,7 @@ class JobSerializer(serializers.ModelSerializer):
     #['job_id','job_title','company_name','job_link', 'job_description','double_check']
 
 class ApplicationSerializer(serializers.ModelSerializer):
+  appl_job = JobSerializer()
   class Meta:
     model = Application
     fields = '__all__'
