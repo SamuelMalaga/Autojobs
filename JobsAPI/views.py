@@ -175,8 +175,8 @@ def get_application_statuses(request, user_id, appl_id):
     return Response(serializer.data)
 
 @api_view(['PUT'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def update_application(request, user_id, appl_id):
     try:
         application = Application.objects.get(appl_user=user_id, pk=appl_id)
