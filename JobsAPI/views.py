@@ -108,8 +108,6 @@ def execute_LinkPublicScraper(request):
 
     job_link = JSON_data.get('job_link', None)
 
-    print(job_link)
-
     try:
         # Execute o script JavaScript.
         result = subprocess.run(
