@@ -19,6 +19,11 @@ const argv = yargs
       describe:'Tipo de trabalho, Presencial (1), Híbrido (2) ou remoto (3)',
       demandOption: true, // Defina como true se o argumento for obrigatório
       type: 'int', // Especifique o tipo do argumento (string neste caso)
+    },
+    'upper-limit': {
+      describe:'How much jobs you want the scraper to search, 1000 is the theoretical limit but 200 is the max recommended',
+      demandOption: false, // Defina como true se o argumento for obrigatório
+      type: 'int', // Especifique o tipo do argumento (string neste caso)
     }
   })
   .argv;

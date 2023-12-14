@@ -74,7 +74,7 @@ def job_detail(request,id):
 @permission_classes([IsAuthenticated])
 def execute_FULLpublicJscraper(request):
     # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
-    script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/FULLpublicJscraper.js'
+    script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/JScrapers/FULLpublicJscraper.js'
     job_name = request.GET.get('job_name')
     job_location = request.GET.get('job_location')
     job_type = request.GET.get('job_type')
@@ -100,7 +100,7 @@ def execute_FULLpublicJscraper(request):
 @permission_classes([IsAuthenticated])
 def execute_LinkPublicScraper(request):
     # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
-    script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/LinkPublicScraper.js'
+    script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/JScrapers/LinkPublicScraper.js'
 
     request_body = request.body.decode('utf-8')
 
