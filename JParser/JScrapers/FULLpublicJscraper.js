@@ -1,7 +1,8 @@
 const pup = require('puppeteer');
 const sqlite3 = require('sqlite3').verbose();
 const yargs = require('yargs');
-
+const logger = require('../CommonModules/LoggingTool');
+const commonFunctions = require('../CommonModules/CommonFunctions')
 
 const argv = yargs
   .options({
@@ -21,7 +22,7 @@ const argv = yargs
       type: 'int', // Especifique o tipo do argumento (string neste caso)
     },
     'upper-limit': {
-      describe:'How much jobs you want the scraper to search, 1000 is the theoretical limit but 200 is the max recommended',
+      describe:'How many jobs you want the scraper to search, 1000 is the theoretical limit but 200 is the max recommended',
       demandOption: false, // Defina como true se o argumento for obrigatório
       type: 'int', // Especifique o tipo do argumento (string neste caso)
     }
@@ -110,43 +111,35 @@ async function parseLiItems(page, maxItens) {
   while (itensColetados < maxItens) {
     // Realize as operações que deseja no elemento, como extrair informações e adicionar aos resultados.
     //Index in the <ul> starting point is 1
-    const numberOfLis = await findAllChildrenByXpath(page, '//*[@id="main-content"]/section[2]/ul/li')
+    const numberOfLis = await commonFunctions.findAllChildrenByXpath(page, '//*[@id="main-content"]/section[2]/ul/li','Retrieving List size reference')
     liIndex = itensColetados + 1
 
     if(liIndex === numberOfLis.length){
       break
     }
 
-    //Extrai os dados da anchor tag
     const aTagXpath = `//*[@id="main-content"]/section[2]/ul/li[${liIndex}]/div/a`
     const anchorTagToClick = await page.waitForXPath(aTagXpath)
-    const testPropertie = 'href'
-    const jobLink = await getPropertyWithFallback(page, aTagXpath, 'href', 3);
+    const jobLink = await commonFunctions.getHrefByXPath(page, aTagXpath, 'Retrieving job link');
     //const jobLink = await getPropertyByXpath(page, aTagXpath, 'href');
     //Pega o nome da vaga
     const h3TagXpath = `//*[@id="main-content"]/section[2]/ul/li[${liIndex}]/div/div[2]/h3`;
-    const h3TagInstance = await page.waitForXPath(h3TagXpath)
-    const jobTitle = await getTextContentByXPath(page, h3TagXpath);
+
+    const jobTitle = await commonFunctions.getTextContentByXPath(page, h3TagXpath,'Retrieving job title');
     //await h3TagInstance.evaluate(element => element.textContent);
     //Pega o nome da empresa
     const companyNameTagXpath =`//*[@id="main-content"]/section[2]/ul/li[${liIndex}]/div/div[2]/h4`
-    const companyNameTag = await page.waitForXPath(companyNameTagXpath)
-    const companyName = await getTextContentByXPath(page, companyNameTagXpath);
+    //const companyNameTag = await page.waitForXPath(companyNameTagXpath)
+    const companyName = await commonFunctions.getTextContentByXPath(page, companyNameTagXpath,'Retrieving company Name');
     //await companyNameTag.evaluate(element => element.textContent);
     //Pega o texto principal da descrição
     await page.waitForSelector('.decorated-job-posting__details');
     const jobInfoDivXpath='/html/body/div[1]/div/section/div[2]/div/section[1]/div/div/section/div'
-    const jobDescription = await getTextContentByXPath(page, jobInfoDivXpath);
+    const jobDescription = await commonFunctions.getInnerHTMLByXPath(page, jobInfoDivXpath,'Retrieving job description');
     //const jobInfoDiv = await page.$('.decorated-job-posting__details');
     //const jobDescription = await jobInfoDiv.evaluate(element => element.textContent);
-
-    //Pega a propriedade da div que contém o ID da vaga
-    const jobIdDivXpath=`/html/body/div[1]/div/main/section[2]/ul/li[${liIndex}]/div`
-    const jobIdDiv = await page.waitForXPath(jobIdDivXpath)
-    const dataEntityUrn = await getPropertyByXpath(page, jobIdDivXpath, 'data-entity-urn');
-    const jobId = dataEntityUrn.match(/\d+$/)[0] ? dataEntityUrn.match(/\d+$/)[0] : null;
     job = {
-      "job_id":jobId,
+      "job_id":null,
       "job_title":jobTitle,
       "company_name":companyName,
       "job_link": jobLink,
@@ -163,7 +156,7 @@ async function parseLiItems(page, maxItens) {
     }
 
     //const randomDelay = Math.floor(Math.random() * (10000 - 8000 + 1)) + 8000;
-    await delayTime(6000)
+    await commonFunctions.delayTime(6000)
 
     // Aumente o contador de itens coletados.
     itensColetados++;
@@ -247,14 +240,14 @@ async function cleanUpParsedResults(parsedResults) {
   const data = []; // Lista para armazenar as informações
   const limit = 1000; // Limite de registros
 
-  const ulXPathSelector = await findAllChildrenByXpath(page, '//*[@id="main-content"]/section[2]/ul/li')
+  const ulXPathSelector = await commonFunctions.findAllChildrenByXpath(page, '//*[@id="main-content"]/section[2]/ul/li','Retrieving all childrenByXpath')
 
-  const rawOutput = await parseLiItems(page, 200);
+  const rawOutput = await parseLiItems(page, 2);
 
 
   const cleanedOutput = await cleanUpParsedResults(rawOutput);
 
-  await insertJobsIntoDatabase('C:/Users/SamuelMendesMalaga/Documents/Autojobs/SQLiteDB/autojobs.db',cleanedOutput )
+  await commonFunctions.insertJobsIntoDatabase('C:/Users/SamuelMendesMalaga/Documents/Autojobs/SQLiteDB/autojobs.db',cleanedOutput )
 
   const endTime = new Date();
 
