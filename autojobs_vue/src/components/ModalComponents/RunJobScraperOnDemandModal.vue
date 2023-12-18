@@ -8,12 +8,10 @@
           <button class="delete" aria-label="close" @click="closeRunJobScraperOnDemandModal"></button>
         </header>
         <section class="modal-card-body">
-          <p>Work Name</p>
-          <input class="input is-link" type="text" placeholder="Link input">
-          <p>Work Location</p>
-          <input class="input is-link" type="text" placeholder="Link input">
-          <p>Work Type</p>
-          <input class="input is-link" type="text" placeholder="Link input">
+          <TextInputComponent ref="jobNameInput" title="Job Name" placeholder="Type the name of the job position" />
+          <TextInputComponent ref="workLocationInput" title="Work Location" placeholder="Type the job location" />
+          <DropdownInputComponent ref="workTypeDropdown" title="Job Type" :options="jobTypeOptions" />
+
         </section>
         <footer class="modal-card-foot">
           <!-- Botões de Ação -->
@@ -27,32 +25,56 @@
 
 <script>
 import axios from 'axios';
+import TextInputComponent from '../CommonComponents/TextInputComponent.vue';
+import DropdownInputComponent from '../CommonComponents/DropdownInputComponent.vue';
 
 export default {
+  data() {
+    return {
+      jobTypeOptions: [
+        { field_name: "On-site", field_value: "1" },
+        { field_name: "Hybrid", field_value: "2" },
+        { field_name: "Remote", field_value: "3" },
+      ],
+    };
+  },
+  components:{
+    TextInputComponent,
+    DropdownInputComponent
+  },
   methods: {
     closeRunJobScraperOnDemandModal() {
       this.$emit('close');
     },
     async handleSubmit() {
-      // Get the input value
-      const jobLink = document.querySelector('.input.is-link').value;
-
-      // Make a POST request to your Django backend using Axios
       try {
-        const response = await axios.post('http://127.0.0.1:8000/execute_link_scraper/', {
-          job_link: jobLink,
-        });
+        // Obtenha os valores dos campos do formulário
+        const jobName = this.$refs.jobNameInput.getValue();
+        const workLocation = this.$refs.workLocationInput.getValue();
+        const workType = this.$refs.workTypeDropdown.getValue();
 
-        // Check if the request was successful (status code 2xx)
-        if (response.status === 200) {
-          // Handle success (e.g., close the modal)
-          this.closeModal();
-        } else {
-          // Handle error (e.g., show an error message)
-          console.error('Error:', response.statusText);
-        }
+        const headers = {
+          Authorization: `Token ${localStorage.getItem('token')}`,
+        };
+
+        // Construa a URL para a chamada da API
+        const apiUrl = `http://127.0.0.1:8000/execute_full_scraper/`;
+
+        // Faça a chamada para o backend
+        const response = await axios.post(apiUrl,{
+            job_name: jobName,
+            job_location: workLocation,
+            job_type: workType,
+        },{headers});
+
+        // Lide com a resposta, se necessário
+        //console.log(apiUrl);
+
+        // Feche o modal após o sucesso
+        this.closeRunJobScraperOnDemandModal();
       } catch (error) {
-        console.error('Error:', error.message);
+        // Lide com erros, se necessário
+        console.error(error);
       }
     },
   },

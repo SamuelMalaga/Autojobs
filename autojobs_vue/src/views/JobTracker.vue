@@ -1,99 +1,117 @@
 <template>
-  <div class="table-container">
-    <div class="columns is-mobile ml-5">
-      <ApplicationsDisplayComponent
+  <nav class="panel p-1">
+    <p class="panel-heading">
+      My Applications
+    </p>
+    <div class="table-container mt-3">
+      <div class="columns is-mobile ml-5">
+        <ApplicationsDisplayComponent
+            :ApplicationsList="applications"
+            :ColumnStatus= "'Screening'"
+            :NextColumnStatus="'Initial Interview'"
+            :PreviousColumnStatus="'Cancelled'"
+            :toggleCard="toggleCard"
+            :expandedCards="expandedCards"
+            :changeStatus="changeStatus"
+            :saveApplicationStatus="saveApplicationStatus"
+            />
+        <div class="column is-0"></div>
+        <ApplicationsDisplayComponent
+            :ApplicationsList="applications"
+            :ColumnStatus= "'Initial Interview'"
+            :NextColumnStatus="'Interview'"
+            :PreviousColumnStatus="'Screening'"
+            :toggleCard="toggleCard"
+            :expandedCards="expandedCards"
+            :changeStatus="changeStatus"
+            :saveApplicationStatus="saveApplicationStatus"
+            />
+        <div class="column is-0"></div>
+          <ApplicationsDisplayComponent
+            :ApplicationsList="applications"
+            :ColumnStatus= "'Interview'"
+            :NextColumnStatus="'Technical Interview'"
+            :PreviousColumnStatus="'Initial Interview'"
+            :toggleCard="toggleCard"
+            :expandedCards="expandedCards"
+            :changeStatus="changeStatus"
+            :saveApplicationStatus="saveApplicationStatus"
+            />
+        <div class="column is-0"></div>
+          <ApplicationsDisplayComponent
           :ApplicationsList="applications"
-          :ColumnStatus= "'Screening'"
-          :NextColumnStatus="'Initial Interview'"
-          :PreviousColumnStatus="'Cancelled'"
+          :ColumnStatus= "'Technical Interview'"
+          :NextColumnStatus="'Techincal Assessment'"
+          :PreviousColumnStatus="'Interview'"
           :toggleCard="toggleCard"
           :expandedCards="expandedCards"
           :changeStatus="changeStatus"
           :saveApplicationStatus="saveApplicationStatus"
           />
-      <div class="column is-0"></div>
-      <ApplicationsDisplayComponent
-          :ApplicationsList="applications"
-          :ColumnStatus= "'Initial Interview'"
-          :NextColumnStatus="'Interview'"
-          :PreviousColumnStatus="'Screening'"
-          :toggleCard="toggleCard"
-          :expandedCards="expandedCards"
-          :changeStatus="changeStatus"
-          :saveApplicationStatus="saveApplicationStatus"
-          />
-      <div class="column is-0"></div>
+        <div class="column is-0"></div>
         <ApplicationsDisplayComponent
           :ApplicationsList="applications"
-          :ColumnStatus= "'Interview'"
-          :NextColumnStatus="'Technical Interview'"
-          :PreviousColumnStatus="'Initial Interview'"
+          :ColumnStatus= "'Techincal Assessment'"
+          :NextColumnStatus="'Proposal'"
+          :PreviousColumnStatus="'Technical Interview'"
           :toggleCard="toggleCard"
           :expandedCards="expandedCards"
           :changeStatus="changeStatus"
           :saveApplicationStatus="saveApplicationStatus"
           />
-      <div class="column is-0"></div>
+        <div class="column is-0"></div>
         <ApplicationsDisplayComponent
-        :ApplicationsList="applications"
-        :ColumnStatus= "'Technical Interview'"
-        :NextColumnStatus="'Techincal Assessment'"
-        :PreviousColumnStatus="'Interview'"
-        :toggleCard="toggleCard"
-        :expandedCards="expandedCards"
-        :changeStatus="changeStatus"
-        :saveApplicationStatus="saveApplicationStatus"
-        />
-      <div class="column is-0"></div>
-      <ApplicationsDisplayComponent
-        :ApplicationsList="applications"
-        :ColumnStatus= "'Techincal Assessment'"
-        :NextColumnStatus="'Proposal'"
-        :PreviousColumnStatus="'Technical Interview'"
-        :toggleCard="toggleCard"
-        :expandedCards="expandedCards"
-        :changeStatus="changeStatus"
-        :saveApplicationStatus="saveApplicationStatus"
-        />
-      <div class="column is-0"></div>
-      <ApplicationsDisplayComponent
-        :ApplicationsList="applications"
-        :ColumnStatus= "'Proposal'"
-        :NextColumnStatus="'Cancelled'"
-        :PreviousColumnStatus="'Techincal Assessment'"
-        :toggleCard="toggleCard"
-        :expandedCards="expandedCards"
-        :changeStatus="changeStatus"
-        :saveApplicationStatus="saveApplicationStatus"
-        />
-      <div class="column is-0"></div>
-      <ApplicationsDisplayComponent
-        :ApplicationsList="applications"
-        :ColumnStatus= "'Cancelled'"
-        :NextColumnStatus="'Screening'"
-        :PreviousColumnStatus="'Proposal'"
-        :toggleCard="toggleCard"
-        :expandedCards="expandedCards"
-        :changeStatus="changeStatus"
-        :saveApplicationStatus="saveApplicationStatus"
-        />
-      <div class="column is-0"></div>
+          :ApplicationsList="applications"
+          :ColumnStatus= "'Proposal'"
+          :NextColumnStatus="'Cancelled'"
+          :PreviousColumnStatus="'Techincal Assessment'"
+          :toggleCard="toggleCard"
+          :expandedCards="expandedCards"
+          :changeStatus="changeStatus"
+          :saveApplicationStatus="saveApplicationStatus"
+          />
+        <div class="column is-0"></div>
+        <ApplicationsDisplayComponent
+          :ApplicationsList="applications"
+          :ColumnStatus= "'Cancelled'"
+          :NextColumnStatus="'Screening'"
+          :PreviousColumnStatus="'Proposal'"
+          :toggleCard="toggleCard"
+          :expandedCards="expandedCards"
+          :changeStatus="changeStatus"
+          :saveApplicationStatus="saveApplicationStatus"
+          />
+        <div class="column is-0"></div>
+      </div>
     </div>
-  </div>
+    <div class="panel-block">
+      <p class="control has-icons-middle">
+        <a class="pagination-previous" @click="showCreateApplicationAndJobModal">Create application</a>
+        <CreateApplicationAndJobModal
+        v-if="isCreateApplicationModalAndJobVisible"
+        @close="closeCreateApplicationAndJobModal"/>
+      </p>
+    </div>
+  </nav>
 </template>
 
 <script>
 import axios from 'axios';
 import ApplicationsDisplayComponent from '@/components/ApplicationsDisplayComponent.vue';
+import CreateApplicationAndJobModal from '@/components/ModalComponents/CreateApplicationAndJobModal.vue'
 export default {
   name: 'JobTracker',
   components: {
-    ApplicationsDisplayComponent
+    ApplicationsDisplayComponent,
+    CreateApplicationAndJobModal
+
   },
   data(){
     return{
       expandedCards: [],
-      applications:[]
+      applications:[],
+      isCreateApplicationModalAndJobVisible:false,
+
     }
   },
   created() {
@@ -146,7 +164,13 @@ export default {
       } catch (error) {
 
       }
-    }
+    },
+    showCreateApplicationAndJobModal() {
+      this.isCreateApplicationModalAndJobVisible = true;
+    },
+    closeCreateApplicationAndJobModal() {
+      this.isCreateApplicationModalAndJobVisible = false;
+    },
   },
   created(){
     this.fetchApplications(`http://127.0.0.1:8000/users/${this.$store.getters.getUserId}/applications/`)

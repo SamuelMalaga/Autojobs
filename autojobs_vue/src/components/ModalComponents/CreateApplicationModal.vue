@@ -38,10 +38,6 @@ export default {
       this.$emit('close');
     },
     async handleSubmit() {
-      // Get the input value
-
-
-      // Make a POST request to your Django backend using Axios
       try {
         const createApplicationUrl = `${this.$store.getters.getBaseURL}users/${this.$store.getters.getUserId}/applications/create/`
 
