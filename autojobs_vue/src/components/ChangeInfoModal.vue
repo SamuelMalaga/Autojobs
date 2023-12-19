@@ -8,7 +8,7 @@
           <button class="delete" aria-label="close" @click="handleClose"></button>
         </header>
         <section class="modal-card-body">
-          <h2 class="subtitle">ID Obj: {{ object_instance.object_id }}</h2>
+          <!-- <h2 class="subtitle">ID Obj: {{ object_instance.object_id }}</h2> -->
           <div v-for="field in object_instance.fields" :key="field.field_name">
             <h2 class="subtitle">{{ field.field_title }} | {{ field.field_type }}</h2>
             <input v-model="field.field_value" class="input is-normal mb-4" type="text" placeholder="Normal input">

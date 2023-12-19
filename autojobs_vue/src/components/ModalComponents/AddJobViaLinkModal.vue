@@ -8,8 +8,7 @@
           <button class="delete" aria-label="close" @click="closeAddJobViaLinkModal"></button>
         </header>
         <section class="modal-card-body">
-          <p>Job Link</p>
-          <input class="input is-link" type="text" placeholder="Link input">
+          <TextInputComponent ref="jobLinkInput" title="Job Link" placeholder="Job Link" />
         </section>
         <footer class="modal-card-foot">
           <!-- Botões de Ação -->
@@ -23,15 +22,19 @@
 
 <script>
 import axios from 'axios';
+import TextInputComponent from '../CommonComponents/TextInputComponent.vue';
 
 export default {
+  components:{
+    TextInputComponent,
+  },
   methods: {
     closeAddJobViaLinkModal() {
       this.$emit('close');
     },
     async handleSubmit() {
       // Get the input value
-      const jobLink = document.querySelector('.input.is-link').value;
+      const jobLink = this.$refs.jobLinkInput.getValue();
       const headers = {
           Authorization: `Token ${localStorage.getItem('token')}`,
         };
@@ -45,7 +48,7 @@ export default {
         // Check if the request was successful (status code 2xx)
         if (response.status === 200) {
           // Handle success (e.g., close the modal)
-          this.closeModal();
+          this.closeAddJobViaLinkModal();
         } else {
           // Handle error (e.g., show an error message)
           console.error('Error:', response.statusText);
