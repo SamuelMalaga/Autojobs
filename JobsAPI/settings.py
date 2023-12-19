@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     #VueJs Enabler
     'corsheaders',
     ##Auth
-    'rest_framework.authtoken'
+    'rest_framework.authtoken',
+    ##Async
+    'celery',
+    'django_celery_results'
 ]
 
 MIDDLEWARE = [
@@ -159,4 +162,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# Celery config
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_CACHE_BACKEND = 'django-cache'
 
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}

@@ -17,9 +17,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate, logout
 import json
+from django.http import JsonResponse
+from .tasks import test_task, execute_FULLpublicJscraper_task
 
+# ---------------------------------------------------------------
+# <---                  Async test Views                    --->
+# ---------------------------------------------------------------
+def iniciar_teste_tarefa(request):
+    # Chama a tarefa do Celery
+    test_task.delay()
 
-
+    return JsonResponse({'mensagem': 'Tarefa iniciada com sucesso!'})
 # ---------------------------------------------------------------
 # <---                  Job Related Views                    --->
 # ---------------------------------------------------------------
@@ -69,34 +77,50 @@ def job_detail(request,id):
 # ---------------------------------------------------------------
 # <---                Scraper Related Views                  --->
 # ---------------------------------------------------------------
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def execute_FULLpublicJscraper(request):
-    # Substitua 'seu_script.js' pelo caminho para o seu script JavaScript.
-    script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/JScrapers/FULLpublicJscraper.js'
+    # script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/JScrapers/FULLpublicJscraper.js'
+    # try:
+    #     data = json.loads(request.body)
+    #     job_name = data.get('job_name', '')
+    #     job_location = data.get('job_location', '')
+    #     job_type = data.get('job_type', '')
+
+    #     # Se necessário, adicione validações ou manipulações adicionais dos parâmetros aqui
+    #     print('job_name:', job_name, 'job_location:', job_location, 'job_type:', job_type)
+
+    #     try:
+    #             # Execute o script JavaScript.
+    #             result = subprocess.run(['node', script_path, '--job-name', job_name,'--job-location', job_location,'--job-type', job_type], capture_output=True, text=True)
+
+    #             # Verifique a saída do processo.
+    #             if result.returncode == 0:
+    #                 return JsonResponse({'message': 'Script executado com sucesso', 'output': result.stdout})
+    #             else:
+    #                 return JsonResponse({'message': 'Erro na execução do script', 'error_output': result.stderr}, status=500)
+    #     except Exception as e:
+    #         return JsonResponse({'message': 'Erro na execução do script', 'error_message': str(e)}, status=500)
+    # except json.JSONDecodeError:
+    #      return JsonResponse({'message': 'Erro na decodificação do JSON no corpo da requisição'}, status=400)
     try:
         data = json.loads(request.body)
         job_name = data.get('job_name', '')
         job_location = data.get('job_location', '')
         job_type = data.get('job_type', '')
 
-        # Se necessário, adicione validações ou manipulações adicionais dos parâmetros aqui
-        print('job_name:', job_name, 'job_location:', job_location, 'job_type:', job_type)
+        # Chame a tarefa do Celery
+        result = execute_FULLpublicJscraper_task.delay(job_name, job_location, job_type)
 
-        try:
-                # Execute o script JavaScript.
-                result = subprocess.run(['node', script_path, '--job-name', job_name,'--job-location', job_location,'--job-type', job_type], capture_output=True, text=True)
+        # Obtenha o resultado da tarefa
+        result_data = result.get()
 
-                # Verifique a saída do processo.
-                if result.returncode == 0:
-                    return JsonResponse({'message': 'Script executado com sucesso', 'output': result.stdout})
-                else:
-                    return JsonResponse({'message': 'Erro na execução do script', 'error_output': result.stderr}, status=500)
-        except Exception as e:
-            return JsonResponse({'message': 'Erro na execução do script', 'error_message': str(e)}, status=500)
+        # Construa a resposta JsonResponse usando os dados do resultado
+        return JsonResponse(result_data)
+
     except json.JSONDecodeError:
-         return JsonResponse({'message': 'Erro na decodificação do JSON no corpo da requisição'}, status=400)
+        return JsonResponse({'message': 'Erro na decodificação do JSON no corpo da requisição'}, status=400)
 
 
 @api_view(['POST'])

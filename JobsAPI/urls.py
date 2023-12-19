@@ -68,5 +68,7 @@ urlpatterns = [
     path('login/', views.login_test),
     path('signup_test/', views.signup_test),
     path('response_test/',views.response_test),
-    path('logout/',views.logout_test)
+    path('logout/',views.logout_test),
+    # <-----Async test urls----->
+    path('test_task/', views.iniciar_teste_tarefa),
 ]
