@@ -8,9 +8,15 @@
           <button class="delete" aria-label="close" @click="handleClose"></button>
         </header>
         <section class="modal-card-body">
-          <!-- <h2 class="subtitle">ID Obj: {{ object_instance.object_id }}</h2> -->
+          <!-- <TextInputComponent
+            v-for="field in object_instance.fields"
+            :key="field.field_name"
+            :title="field.field_title"
+            :placeholder="'Normal input'"
+            v-model="field.field_value"
+          /> -->
           <div v-for="field in object_instance.fields" :key="field.field_name">
-            <h2 class="subtitle">{{ field.field_title }} | {{ field.field_type }}</h2>
+            <h2 class="subtitle">{{ field.field_title }} | {{ field.field_type }} | {{ field.field_name }}</h2>
             <input v-model="field.field_value" class="input is-normal mb-4" type="text" placeholder="Normal input">
           </div>
         </section>
@@ -27,8 +33,12 @@
 <script>
 
 import axios from 'axios';
+import TextInputComponent from './CommonComponents/TextInputComponent.vue';
 
 export default {
+  components: {
+    TextInputComponent,
+  },
   props: {
     isOpen: {
       type: Boolean,
@@ -78,13 +88,9 @@ export default {
 
       if(this.object_instance.instance_entity==='User'){
         updateUrl = `${this.updateUrl}/update`
-        console.log('é tipo user')
-        console.log(updateUrl)
       } else {
         // Construir o URL de atualização usando a propriedade fornecida pelo pai
-        console.log('não é tipo user')
         updateUrl = `${this.updateUrl}${objectId}/update`;
-        console.log(updateUrl)
       }
 
       //console.log(this.object_instance.instance_entity)

@@ -77,33 +77,7 @@ def job_detail(request,id):
 # ---------------------------------------------------------------
 # <---                Scraper Related Views                  --->
 # ---------------------------------------------------------------
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-@api_view(['POST'])
-def execute_FULLpublicJscraper(request):
-    # script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/JScrapers/FULLpublicJscraper.js'
-    # try:
-    #     data = json.loads(request.body)
-    #     job_name = data.get('job_name', '')
-    #     job_location = data.get('job_location', '')
-    #     job_type = data.get('job_type', '')
-
-    #     # Se necessário, adicione validações ou manipulações adicionais dos parâmetros aqui
-    #     print('job_name:', job_name, 'job_location:', job_location, 'job_type:', job_type)
-
-    #     try:
-    #             # Execute o script JavaScript.
-    #             result = subprocess.run(['node', script_path, '--job-name', job_name,'--job-location', job_location,'--job-type', job_type], capture_output=True, text=True)
-
-    #             # Verifique a saída do processo.
-    #             if result.returncode == 0:
-    #                 return JsonResponse({'message': 'Script executado com sucesso', 'output': result.stdout})
-    #             else:
-    #                 return JsonResponse({'message': 'Erro na execução do script', 'error_output': result.stderr}, status=500)
-    #     except Exception as e:
-    #         return JsonResponse({'message': 'Erro na execução do script', 'error_message': str(e)}, status=500)
-    # except json.JSONDecodeError:
-    #      return JsonResponse({'message': 'Erro na decodificação do JSON no corpo da requisição'}, status=400)
+def async_FULLpublicJscraper(request):
     try:
         data = json.loads(request.body)
         job_name = data.get('job_name', '')
@@ -121,6 +95,32 @@ def execute_FULLpublicJscraper(request):
 
     except json.JSONDecodeError:
         return JsonResponse({'message': 'Erro na decodificação do JSON no corpo da requisição'}, status=400)
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+@api_view(['POST'])
+def execute_FULLpublicJscraper(request):
+    script_path = 'C:/Users/SamuelMendesMalaga/Documents/Autojobs/JParser/JScrapers/FULLpublicJscraper.js'
+    try:
+        data = json.loads(request.body)
+        job_name = data.get('job_name', '')
+        job_location = data.get('job_location', '')
+        job_type = data.get('job_type', '')
+
+        print('job_name:', job_name, 'job_location:', job_location, 'job_type:', job_type)
+
+        try:
+
+                result = subprocess.run(['node', script_path, '--job-name', job_name,'--job-location', job_location,'--job-type', job_type], capture_output=True, text=True)
+
+                if result.returncode == 0:
+                    return JsonResponse({'message': 'Script executado com sucesso', 'output': result.stdout})
+                else:
+                    return JsonResponse({'message': 'Erro na execução do script', 'error_output': result.stderr}, status=500)
+        except Exception as e:
+            return JsonResponse({'message': 'Erro na execução do script', 'error_message': str(e)}, status=500)
+    except json.JSONDecodeError:
+         return JsonResponse({'message': 'Erro na decodificação do JSON no corpo da requisição'}, status=400)
+
 
 
 @api_view(['POST'])
