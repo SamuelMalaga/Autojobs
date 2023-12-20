@@ -27,9 +27,9 @@
         </div>
       </div>
       <button class="button is-sucess m-3" @click="openCreateModal">Add</button>
-      <ChangeInfoModal
+      <UpdateEducationalExperienceModal
         :isOpen="isEditModalOpen"
-        :object_instance="education_experience_instance"
+        :EducationalExperience="this.selectedEducationalExperience"
         :updateUrl="endpoint"
         @submit="handleEditSubmit"
         @data-updated="handleDataUpdated"
@@ -43,14 +43,12 @@
         @data-deleted="handleDataDeleted"
         @close="closeDeleteModal"
       />
-      <CreateInfoModal
+      <CreateEducationalExperienceModal
         :isOpen="isCreateModalOpen"
-        :fields="object_fields"
         :createEndpoint="endpoint"
         @submit="handleCreateSubmit"
         @data-created="handleCreated"
         @close="closeCreateModal"
-        :object_instance="education_experience_instance"
       />
     </div>
 </template>
@@ -58,15 +56,18 @@
 <script>
 
 import axios from 'axios';
-import ChangeInfoModal from './ChangeInfoModal.vue';
+import CreateEducationalExperienceModal from './ModalComponents/EducationalExperienceModals/CreateEducationalExperienceModal.vue';
+import UpdateEducationalExperienceModal from './ModalComponents/EducationalExperienceModals/UpdateEducationalExperienceModal.vue';
+// import ChangeInfoModal from './ChangeInfoModal.vue';
 import DeleteInfoModal from './DeleteInfoModal.vue';
-import CreateInfoModal from './CreateInfoModal.vue';
+// import CreateInfoModal from './CreateInfoModal.vue';
 
 export default {
   components: {
-    ChangeInfoModal,
     DeleteInfoModal,
-    CreateInfoModal
+    CreateEducationalExperienceModal,
+    UpdateEducationalExperienceModal
+
   },
   data() {
     return {
@@ -100,7 +101,8 @@ export default {
         field_value: ""
         }
       ],
-      education_experience_instance:{}
+      education_experience_instance:{},
+      selectedEducationalExperience:null
     };
   },
   computed: {
@@ -142,22 +144,7 @@ export default {
     },
     //<--------------------------------Edit Data---------------------------------------->
     openEditModal(education) {
-
-     //Deep copy of the fields to edit
-      const object_fieldsCopy = this.object_fields
-
-      // Atualize a cópia com os valores da experiência selecionada
-      object_fieldsCopy.forEach(campo => {
-        campo.field_value = education[campo.field_name];
-      });
-
-      // Atualize os dados no objeto
-      this.education_experience_instance = {
-        instance_entity:"Education",
-        object_id: education.id,
-        fields: object_fieldsCopy,
-      };
-      this.selectedEducation = { ...education }
+      this.selectedEducationalExperience = education
       this.isEditModalOpen = true;
     },
     closeEditModal() {

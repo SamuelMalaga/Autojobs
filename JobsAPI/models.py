@@ -38,8 +38,8 @@ class Education(models.Model):
 
     edu_institute = models.CharField(max_length=100)
     edu_description = models.TextField()
-    edu_start_time = models.DateTimeField()
-    edu_end_time = models.DateTimeField()
+    edu_start_time = models.DateTimeField(null=True, blank=True)
+    edu_end_time = models.DateTimeField(null=True, blank=True)
     edu_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)  # Chave estrangeira para o modelo User
 
 
@@ -64,8 +64,8 @@ class Certification(models.Model):
 
     cert_name = models.CharField(max_length=200)
     cert_institute = models.CharField(max_length=100)
-    cert_emmited_at = models.DateTimeField()
-    cert_valid_until = models.DateTimeField()
+    cert_emmited_at = models.DateTimeField(null=True, blank=True)
+    cert_valid_until = models.DateTimeField(null=True, blank=True)
     cert_user = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     def __str__(self):

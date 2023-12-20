@@ -98,7 +98,7 @@
 <script>
 import axios from 'axios';
 import ApplicationsDisplayComponent from '@/components/ApplicationsDisplayComponent.vue';
-import CreateApplicationAndJobModal from '@/components/ModalComponents/CreateApplicationAndJobModal.vue'
+import CreateApplicationAndJobModal from '@/components/ModalComponents/ApplicationModals/CreateApplicationAndJobModal.vue'
 export default {
   name: 'JobTracker',
   components: {

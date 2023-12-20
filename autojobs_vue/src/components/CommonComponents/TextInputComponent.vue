@@ -14,10 +14,14 @@ export default {
       required: true,
     },
     placeholder: String,
+    defaultValue: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
-      inputValue: '',
+      inputValue: this.defaultValue,
     };
   },
   methods: {

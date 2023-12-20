@@ -1,6 +1,6 @@
 <template>
   <div class="tile is-child  box">
-      <p class="title">Certifications</p>
+      <p class="title">Certifications update</p>
       <div v-for="certification in certifications" :key="certification.id" class="card mb-4">
         <header class="card-header">
           <p class="card-header-title">
@@ -27,9 +27,9 @@
         </div>
       </div>
       <button class="button is-sucess m-3" @click="openCreateModal">Add</button>
-      <ChangeInfoModal
+      <UpdateCertificationModal
         :isOpen="isEditModalOpen"
-        :object_instance="certification_instance"
+        :certification="this.selectedCertification"
         :updateUrl="endpoint"
         @submit="handleEditSubmit"
         @data-updated="handleDataUpdated"
@@ -43,28 +43,30 @@
         @data-deleted="handleDataDeleted"
         @close="closeDeleteModal"
       />
-      <CreateInfoModal
+      <CreateCertificationModal
         :isOpen="isCreateModalOpen"
-        :fields="object_fields"
         :createEndpoint="endpoint"
         @submit="handleCreateSubmit"
         @data-created="handleCreated"
         @close="closeCreateModal"
-        :object_instance="certification_instance"
       />
     </div>
 </template>
 <script>
 import axios from 'axios';
-import ChangeInfoModal from './ChangeInfoModal.vue';
+import CreateCertificationModal from './ModalComponents/CertificationModals/CreateCertificationModal.vue';
+import UpdateCertificationModal from './ModalComponents/CertificationModals/UpdateCertificationModal.vue';
 import DeleteInfoModal from './DeleteInfoModal.vue';
-import CreateInfoModal from './CreateInfoModal.vue';
+// import ChangeInfoModal from './ChangeInfoModal.vue';
+// import CreateInfoModal from './CreateInfoModal.vue';
 
 export default {
   components: {
-    ChangeInfoModal,
+    // ChangeInfoModal,
     DeleteInfoModal,
-    CreateInfoModal
+    // CreateInfoModal,
+    CreateCertificationModal,
+    UpdateCertificationModal
   },
   data() {
     return {
@@ -98,6 +100,7 @@ export default {
         field_value: ""
         }
       ],
+      selectedCertification:null,
       certification_instance:{}
     };
   },
@@ -155,7 +158,7 @@ export default {
         object_id: certification.id,
         fields: object_fieldsCopy,
       };
-      this.selectedCertification = { ...certification }
+      this.selectedCertification = certification
       this.isEditModalOpen = true;
     },
     closeEditModal() {

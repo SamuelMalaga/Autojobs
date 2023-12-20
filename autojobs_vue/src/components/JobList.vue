@@ -61,9 +61,9 @@
 
 <script>
 import axios from 'axios';
-import AddJobViaLinkModal from './ModalComponents/AddJobViaLinkModal.vue';
-import RunJobScraperOnDemandModal from './ModalComponents/RunJobScraperOnDemandModal.vue';
-import CreateApplicationModal from './ModalComponents/CreateApplicationModal.vue';
+import AddJobViaLinkModal from './ModalComponents/JobModals/AddJobViaLinkModal.vue';
+import RunJobScraperOnDemandModal from './ModalComponents/JobModals/RunJobScraperOnDemandModal.vue';
+import CreateApplicationModal from './ModalComponents/ApplicationModals/CreateApplicationModal.vue';
 
 
 export default {

@@ -22,7 +22,7 @@
 
 <script>
 import axios from 'axios';
-import TextInputComponent from '../CommonComponents/TextInputComponent.vue';
+import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
 
 export default {
   components:{

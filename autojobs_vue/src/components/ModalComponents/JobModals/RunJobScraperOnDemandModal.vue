@@ -25,8 +25,8 @@
 
 <script>
 import axios from 'axios';
-import TextInputComponent from '../CommonComponents/TextInputComponent.vue';
-import DropdownInputComponent from '../CommonComponents/DropdownInputComponent.vue';
+import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
+import DropdownInputComponent from '../../CommonComponents/DropdownInputComponent.vue';
 
 export default {
   data() {
