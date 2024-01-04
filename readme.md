@@ -135,3 +135,14 @@ A pessoa acessa o linkedin, pega informações da vaga, acessa o link de aplica�
 - FrontEnd: Estruturar os componentes
 - Scraper: Criar uma ferramenta de log do scraper
 - API: Configurar responses e lógicas de responses
+
+### Planejamento pós ano novo
+- Build: criar o requirements.txt para os módulos usados no python
+- Front end: acabar de refatorar as modais para CRUD das informações do usuário
+- Front end: acabar de criar os componentes de input de dados de formulários
+- Front end & back End (api): Gerador de currículo com base nas informações do usuário
+- Back end (api): Criar integração e configuração com o GPT4All
+- Back end (api): criar integração e configuração com o OpenAi
+- Back end (api): criar mecanismo de estruturação e análise das informações de vagas por meio de prompts
+- Back end (api): criar mecanismo de sugestão de currículos de acordo com as informações da vaga por meio de prompts
+

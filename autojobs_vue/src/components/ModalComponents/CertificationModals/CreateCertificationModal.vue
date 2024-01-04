@@ -10,11 +10,10 @@
         <section class="modal-card-body">
           <TextInputComponent ref="certNameInput" title="Certification Name" placeholder="Type the name/title of the certification"/>
           <TextInputComponent ref="certInstitutionNameInput" title="Institution Name" placeholder="Type the name of the Institution"/>
-          <!-- <TextInputComponent ref="certNameInput" title="Certification Name" placeholder="Type the name/title of the certification" :default-value="certification.cert_name"/>
-          <TextInputComponent ref="certInstitutionNameInput" title="Institution Name" placeholder="Type the name of the Institution" :default-value="certification.cert_institute"/>
-          -->
-          <p>Datetime emmited at</p>
-          <p>Datetime Valid until</p>
+          <div class="field has-addons">
+            <DateInputComponent class="control is-expanded" ref="certEmmission" title="Certification emmission date" />
+            <DateInputComponent class="control is-expanded" ref="certExpiration" title="Certification expiration date" />
+          </div>
         </section>
         <footer class="modal-card-foot">
           <!-- Botões de Ação -->
@@ -30,10 +29,12 @@
 
 import axios from 'axios';
 import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
+import DateInputComponent from '../../CommonComponents/DateInputComponent.vue';
 
 export default {
   components:{
-    TextInputComponent
+    TextInputComponent,
+    DateInputComponent
   },
   props: {
     isOpen: {
@@ -69,7 +70,9 @@ export default {
       const requestBody = {
         //Add more fields as needed
         "cert_name":this.$refs.certNameInput.getValue(),
-        "cert_institute":this.$refs.certInstitutionNameInput.getValue()
+        "cert_institute":this.$refs.certInstitutionNameInput.getValue(),
+        "cert_emmited_at" :this.$refs.certEmmission.getValue(),
+        "cert_valid_until":this.$refs.certExpiration.getValue()
       };
 
       const headers = {

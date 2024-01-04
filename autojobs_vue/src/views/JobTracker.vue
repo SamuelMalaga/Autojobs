@@ -18,7 +18,7 @@
         <div class="column is-0"></div>
         <ApplicationsDisplayComponent
             :ApplicationsList="applications"
-            :ColumnStatus= "'Initial Interview'"
+            :ColumnStatus= "'Inital interview'"
             :NextColumnStatus="'Interview'"
             :PreviousColumnStatus="'Screening'"
             :toggleCard="toggleCard"

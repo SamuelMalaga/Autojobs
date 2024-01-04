@@ -4,7 +4,7 @@
       <div v-for="experience in workExperiences" :key="experience.id" class="card mb-4">
         <header class="card-header">
           <p class="card-header-title">
-            {{experience.exp_company}}
+            {{experience.exp_title}} at {{ experience.exp_company }}
           </p>
           <button class="card-header-icon" aria-label="more options" @click="openEditModal(experience)">
             <span class="icon" >
@@ -27,10 +27,10 @@
       </div>
       <button class="button is-sucess m-3" @click="openCreateModal">Add</button>
       <!-- Modal de Edição -->
-      <ChangeInfoModal
+      <UpdateWorkExperienceModal
         :isOpen="isEditModalOpen"
-        :object_instance="work_experience_instance"
         :updateUrl="endpoint"
+        :-experience="selectedExperience"
         @submit="handleEditSubmit"
         @data-updated="handleDataUpdated"
         @close="closeEditModal"
@@ -43,14 +43,13 @@
         @data-deleted="handleDataDeleted"
         @close="closeDeleteModal"
       />
-      <CreateInfoModal
+      <CreateWorkExperienceModal
         :isOpen="isCreateModalOpen"
         :fields="object_fields"
         :createEndpoint="endpoint"
         @submit="handleCreateSubmit"
         @data-created="handleCreated"
         @close="closeCreateModal"
-        :object_instance="work_experience_instance"
       />
     </div>
 </template>
@@ -60,12 +59,16 @@ import axios from 'axios';
 import ChangeInfoModal from './ChangeInfoModal.vue';
 import DeleteInfoModal from './DeleteInfoModal.vue';
 import CreateInfoModal from './CreateInfoModal.vue';
+import CreateWorkExperienceModal from './ModalComponents/WorkExperienceModals/CreateWorkExperienceModal.vue';
+import UpdateWorkExperienceModal from './ModalComponents/WorkExperienceModals/UpdateWorkExperienceModal.vue';
 
 export default {
   components: {
     ChangeInfoModal,
     DeleteInfoModal,
-    CreateInfoModal
+    //CreateInfoModal,
+    CreateWorkExperienceModal,
+    UpdateWorkExperienceModal
   },
   data() {
     return {
@@ -105,7 +108,8 @@ export default {
         field_value: ""
         }
       ],
-      work_experience_instance:{}
+      work_experience_instance:{},
+      selectedExperience:null
     };
   },
   computed: {
@@ -149,22 +153,7 @@ export default {
     },
     //<--------------------------------Edit Data---------------------------------------->
     openEditModal(experience) {
-
-      //Deep copy of the fields to edit
-      const object_fieldsCopy = this.object_fields
-
-      // Atualize a cópia com os valores da experiência selecionada
-      object_fieldsCopy.forEach(campo => {
-        campo.field_value = experience[campo.field_name];
-      });
-
-      // Atualize os dados no objeto
-      this.work_experience_instance = {
-        instance_entity:"Work Experiences",
-        object_id: experience.id,
-        fields: object_fieldsCopy,
-      };
-      this.selectedWorkExperience = { ...experience }
+      this.selectedExperience = experience
       this.isEditModalOpen = true;
     },
     closeEditModal() {

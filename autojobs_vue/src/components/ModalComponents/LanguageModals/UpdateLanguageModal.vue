@@ -4,16 +4,13 @@
     <div class="popup_inner">
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Edit Certification new Modal</p>
+          <p class="modal-card-title">Update Language new Modal</p>
           <button class="delete" aria-label="close" @click="handleClose"></button>
         </header>
         <section class="modal-card-body">
-          <TextInputComponent ref="certNameInput" title="Certification Name" placeholder="Type the name/title of the certification" :default-value="certification.cert_name"/>
-          <TextInputComponent ref="certInstitutionNameInput" title="Institution Name" placeholder="Type the name of the Institution" :default-value="certification.cert_institute"/>
-          <div class="field has-addons">
-            <DateInputComponent class="control is-expanded" ref="certEmmission" title="Certification emmission date" :default-value="certification.cert_emmited_at" />
-            <DateInputComponent class="control is-expanded" ref="certExpiration" title="Certification expiration date" :default-value="certification.cert_valid_until" />
-          </div>
+          <TextInputComponent ref="lngName" title="Language Name" placeholder="Type the name of the Institution" :default-value="Language.lng_name"/>
+          <TextInputComponent ref="lngCountry" title="Language Country Name" placeholder="Type the name/title of the education/course" :default-value="Language.lng_country"/>
+          <DropdownInputComponent ref="lngProficiencyLevel" title="Language Proficiency Level" :options="languageProficiencyOptions" />
         </section>
         <footer class="modal-card-foot">
           <!-- Botões de Ação -->
@@ -29,19 +26,19 @@
 
 import axios from 'axios';
 import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
-import DateInputComponent from '../../CommonComponents/DateInputComponent.vue';
+import DropdownInputComponent from '../../CommonComponents/DropdownInputComponent.vue'
 
 export default {
-  components:{
+  components: {
     TextInputComponent,
-    DateInputComponent
+    DropdownInputComponent
   },
   props: {
     isOpen: {
       type: Boolean,
       required: true,
     },
-    certification:{
+    Language:{
       type:Object,
       required: true
     },
@@ -49,10 +46,16 @@ export default {
       type: String,
       required: true,
     },
+
   },
   data() {
     return {
       dadosEditados: {},
+      languageProficiencyOptions:[
+      { field_name: "Basic", field_value: "A1" },
+      { field_name: "Intermediate", field_value: "B1" },
+      { field_name: "Advanced", field_value: "C1" },
+    ]
     };
   },
   methods: {
@@ -68,19 +71,19 @@ export default {
     },
     sendUpdateRequest() {
       const userId = this.$store.getters.getUserId;
-      const certificationId = this.certification.id;
-      const updateCertificationUrl = `${this.updateUrl}${certificationId}/update`
+      const LanguageId = this.EducationalExperience.id;
+      const updateLanguageUrl = `${this.updateUrl}${LanguageId}/update`
       const requestBody = {
         //Add more fields as needed
-        "cert_name":this.$refs.certNameInput.getValue(),
-        "cert_institute":this.$refs.certInstitutionNameInput.getValue(),
-        "cert_emmited_at" :this.$refs.certEmmission.getValue(),
-        "cert_valid_until":this.$refs.certExpiration.getValue()
+        "lng_name":this.$refs.eduDescriptionInput.getValue(),
+        "lng_country":this.$refs.eduInstitutionNameInput.getValue(),
+        "lng_proficiency_level":this.$refs.eduInstitutionNameInput.getValue()
       };
       const headers = {
         Authorization: `Token ${localStorage.getItem('token')}`,
       };
-      axios.put(updateCertificationUrl, requestBody, { headers })
+      console.log(requestBody)
+      axios.put(updateLanguageUrl, requestBody, { headers })
         .then(response => {
           this.$emit("data-updated");
         })

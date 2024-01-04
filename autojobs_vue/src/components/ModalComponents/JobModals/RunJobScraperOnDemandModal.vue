@@ -48,7 +48,6 @@ export default {
     },
     async handleSubmit() {
       try {
-        // Obtenha os valores dos campos do formulário
         const jobName = this.$refs.jobNameInput.getValue();
         const workLocation = this.$refs.workLocationInput.getValue();
         const workType = this.$refs.workTypeDropdown.getValue();
@@ -56,11 +55,7 @@ export default {
         const headers = {
           Authorization: `Token ${localStorage.getItem('token')}`,
         };
-
-        // Construa a URL para a chamada da API
         const apiUrl = `http://127.0.0.1:8000/execute_full_scraper/`;
-
-        // Faça a chamada para o backend
         const response = await axios.post(apiUrl,{
             job_name: jobName,
             job_location: workLocation,

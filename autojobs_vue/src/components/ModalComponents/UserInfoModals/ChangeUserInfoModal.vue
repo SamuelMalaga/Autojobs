@@ -4,19 +4,19 @@
     <div class="popup_inner">
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Edit Certification new Modal</p>
+          <p class="modal-card-title">Update user Info new Modal</p>
           <button class="delete" aria-label="close" @click="handleClose"></button>
         </header>
         <section class="modal-card-body">
-          <TextInputComponent ref="certNameInput" title="Certification Name" placeholder="Type the name/title of the certification" :default-value="certification.cert_name"/>
-          <TextInputComponent ref="certInstitutionNameInput" title="Institution Name" placeholder="Type the name of the Institution" :default-value="certification.cert_institute"/>
+          <LongTextInputComponent ref="userBio" title="User Bio" placeholder="Type the name of the Institution" :default-value="UserInfo.bio"/>
           <div class="field has-addons">
-            <DateInputComponent class="control is-expanded" ref="certEmmission" title="Certification emmission date" :default-value="certification.cert_emmited_at" />
-            <DateInputComponent class="control is-expanded" ref="certExpiration" title="Certification expiration date" :default-value="certification.cert_valid_until" />
+            <TextInputComponent class="control is-expanded" ref="userCity" title="City" placeholder="Type the name/title of the education/course" :default-value="UserInfo.city"/>
+            <TextInputComponent ref="userCountry" title="Country" placeholder="Description of your experience" :default-value="UserInfo.country"/>
+
           </div>
+          <!-- <DropdownInputComponent ref="lngProficiencyLevel" title="Language Proficiency Level" :options="languageProficiencyOptions" /> -->
         </section>
         <footer class="modal-card-foot">
-          <!-- Botões de Ação -->
           <button class="button is-success" @click="handleSubmit">Save changes</button>
           <button class="button" @click="handleClose">Cancel</button>
         </footer>
@@ -29,30 +29,38 @@
 
 import axios from 'axios';
 import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
-import DateInputComponent from '../../CommonComponents/DateInputComponent.vue';
+import DropdownInputComponent from '../../CommonComponents/DropdownInputComponent.vue'
+import LongTextInputComponent from '@/components/CommonComponents/LongTextInputComponent.vue';
 
 export default {
-  components:{
+  components: {
     TextInputComponent,
-    DateInputComponent
-  },
+    DropdownInputComponent,
+    LongTextInputComponent
+},
   props: {
     isOpen: {
       type: Boolean,
       required: true,
     },
-    certification:{
-      type:Object,
-      required: true
-    },
     updateUrl: {
       type: String,
       required: true,
     },
+    UserInfo: {
+      type: Object,
+      required:true
+    }
+
   },
   data() {
     return {
       dadosEditados: {},
+      languageProficiencyOptions:[
+      { field_name: "Basic", field_value: "A1" },
+      { field_name: "Intermediate", field_value: "B1" },
+      { field_name: "Advanced", field_value: "C1" },
+    ]
     };
   },
   methods: {
@@ -67,21 +75,26 @@ export default {
       this.$emit("close");
     },
     sendUpdateRequest() {
-      const userId = this.$store.getters.getUserId;
-      const certificationId = this.certification.id;
-      const updateCertificationUrl = `${this.updateUrl}${certificationId}/update`
+      //const userId = this.$store.getters.getUserId;
+      const updateUserInfoUrl = `${this.updateUrl}/update`
       const requestBody = {
         //Add more fields as needed
-        "cert_name":this.$refs.certNameInput.getValue(),
-        "cert_institute":this.$refs.certInstitutionNameInput.getValue(),
-        "cert_emmited_at" :this.$refs.certEmmission.getValue(),
-        "cert_valid_until":this.$refs.certExpiration.getValue()
+        "bio": this.$refs.userBio.getValue(),
+        "country": this.$refs.userCountry.getValue(),
+        "city": this.$refs.userCity.getValue()
+
       };
       const headers = {
         Authorization: `Token ${localStorage.getItem('token')}`,
       };
-      axios.put(updateCertificationUrl, requestBody, { headers })
+      console.log(requestBody)
+      axios.put(updateUserInfoUrl, requestBody, { headers })
         .then(response => {
+          this.$store.dispatch('updatePartialUserInfo',
+            { bio: requestBody.bio,
+              country: requestBody.country,
+              city: requestBody.city,
+            });
           this.$emit("data-updated");
         })
         .catch(error => {

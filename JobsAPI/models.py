@@ -26,6 +26,7 @@ class WorkExperience(models.Model):
 
     exp_type = models.CharField(max_length=10, choices=EXP_TYPE_CHOICES)
     exp_company = models.CharField(max_length=100)
+    exp_title = models.CharField(max_length=100,null=True)
     exp_description = models.TextField()
     exp_start_time = models.DateTimeField()
     exp_end_time = models.DateTimeField()

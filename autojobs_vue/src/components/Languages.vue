@@ -19,10 +19,10 @@
         </header>
       </div>
       <button class="button is-sucess m-3" @click="openCreateModal()">Add</button>
-      <ChangeInfoModal
+      <UpdateLanguageModal
         :isOpen="isEditModalOpen"
-        :object_instance="object_instance"
         :updateUrl="endpoint"
+        :Language="this.selectedLanguage"
         @submit="handleEditSubmit"
         @data-updated="handleDataUpdated"
         @close="closeEditModal"
@@ -35,7 +35,7 @@
         @data-deleted="handleDataDeleted"
         @close="closeDeleteModal"
       />
-      <CreateInfoModal
+      <CreateLanguageModal
         :isOpen="isCreateModalOpen"
         :fields="object_fields"
         :createEndpoint="endpoint"
@@ -49,15 +49,19 @@
 
 <script>
 import axios from 'axios';
-import ChangeInfoModal from './ChangeInfoModal.vue';
+// import ChangeInfoModal from './ChangeInfoModal.vue';
 import DeleteInfoModal from './DeleteInfoModal.vue';
-import CreateInfoModal from './CreateInfoModal.vue';
+// import CreateInfoModal from './CreateInfoModal.vue';
+import UpdateLanguageModal from './ModalComponents/LanguageModals/UpdateLanguageModal.vue';
+import CreateLanguageModal from './ModalComponents/LanguageModals/CreateLanguageModal.vue';
 
 export default {
   components: {
-    ChangeInfoModal,
+    //ChangeInfoModal,
     DeleteInfoModal,
-    CreateInfoModal,
+    //CreateInfoModal,
+    CreateLanguageModal,
+    UpdateLanguageModal
   },
   data() {
     return {
@@ -85,7 +89,7 @@ export default {
         field_value: ""
         }
       ],
-      //languages_instance:{}
+      selectedLanguage:null,
       object_instance:{}
     };
   },
@@ -130,21 +134,7 @@ export default {
     },
     //<--------------------------------Edit Data---------------------------------------->
     openEditModal(language) {
-        //Deep copy of the fields to edit
-        const object_fieldsCopy = this.object_fields
-
-        // Atualize a cópia com os valores da experiência selecionada
-        object_fieldsCopy.forEach(campo => {
-          campo.field_value = language[campo.field_name];
-        });
-
-        // Atualize os dados no objeto
-        this.object_instance = {
-          instance_entity:"Language",
-          object_id: language.id,
-          fields: object_fieldsCopy,
-        };
-        this.selectedLanguage = { ...language }
+        this.selectedLanguage = language
         this.isEditModalOpen = true;
     },
     closeEditModal() {

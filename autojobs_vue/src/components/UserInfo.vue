@@ -25,22 +25,32 @@
     </div>
   </div>
   </div>
-  <ChangeInfoModal
+  <ChangeUserInfoModal
+        :isOpen="isEditModalOpen"
+        :-user-info="this.user"
+        :updateUrl="endpoint"
+        @submit="handleEditSubmit"
+        @data-updated="handleDataUpdated"
+        @close="closeEditModal"
+      />
+  <!-- <ChangeInfoModal
   :isOpen="isEditModalOpen"
   :object_instance="object_instance"
   :updateUrl="endpoint"
   @submit="handleEditSubmit"
   @data-updated="handleDataUpdated"
   @close="closeEditModal"
-  />
+  /> -->
 </template>
 <script>
 import axios from 'axios';
 import ChangeInfoModal from './ChangeInfoModal.vue';
+import ChangeUserInfoModal from './ModalComponents/UserInfoModals/ChangeUserInfoModal.vue';
 
 export default {
   components: {
-    ChangeInfoModal
+    ChangeInfoModal,
+    ChangeUserInfoModal
   },
   data() {
     return {
@@ -112,18 +122,6 @@ export default {
     },
     //<--------------------------------Edit Data---------------------------------------->
     openEditModal(user) {
-        // Copie os dados do usuário para a edição
-        const object_fieldsCopy = this.object_fields.map(campo => ({
-          ...campo,
-          field_value: this.user[campo.field_name],
-        }));
-
-        this.object_instance = {
-          instance_entity: "User",
-          object_id: user.userId,
-          fields: object_fieldsCopy,
-        };
-
         // Abra o modal de edição
         this.isEditModalOpen = true;
     },
@@ -131,8 +129,6 @@ export default {
       this.isEditModalOpen = false;
     },
     handleEditSubmit(dadosEditados) {
-      // Lógica para enviar dados editados ao backend
-      console.log("Dados Editados:", dadosEditados);
       // Feche o modal
       this.closeEditModal();
     }

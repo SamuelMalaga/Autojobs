@@ -1,7 +1,7 @@
 <template>
   <div class="m-2">
     <p>{{ title }}</p>
-    <textarea class="input" type="text" :placeholder="placeholder || ''" v-model="inputValue"></textarea>
+    <textarea class="input textarea" type="text" :placeholder="placeholder || ''" v-model="inputValue"></textarea>
   </div>
 </template>
 
@@ -13,10 +13,14 @@ export default {
       required: true,
     },
     placeholder: String,
+    defaultValue: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
-      inputValue: '',
+      inputValue: this.defaultValue,
     };
   },
   methods: {

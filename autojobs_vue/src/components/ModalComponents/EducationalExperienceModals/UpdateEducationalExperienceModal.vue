@@ -10,8 +10,10 @@
         <section class="modal-card-body">
           <TextInputComponent ref="eduInstitutionNameInput" title="Education Institute Name" placeholder="Type the name of the Institution" :default-value="EducationalExperience.edu_institute"/>
           <TextInputComponent ref="eduDescriptionInput" title="Education Description" placeholder="Type the name/title of the education/course" :default-value="EducationalExperience.edu_description"/>
-          <p>Start time</p>
-          <p>End time</p>
+          <div class="field has-addons">
+            <DateInputComponent class="control is-expanded" ref="eduStart" title="Education started in" :default-value="EducationalExperience.edu_start_time"/>
+            <DateInputComponent class="control is-expanded" ref="eduEnd" title="Ended in" :default-value="EducationalExperience.edu_end_time"/>
+          </div>
         </section>
         <footer class="modal-card-foot">
           <!-- Botões de Ação -->
@@ -27,10 +29,12 @@
 
 import axios from 'axios';
 import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
+import DateInputComponent from '../../CommonComponents/DateInputComponent.vue';
 
 export default {
-  components: {
+  components:{
     TextInputComponent,
+    DateInputComponent
   },
   props: {
     isOpen: {
@@ -69,7 +73,9 @@ export default {
       const requestBody = {
         //Add more fields as needed
         "edu_description":this.$refs.eduDescriptionInput.getValue(),
-        "edu_institute":this.$refs.eduInstitutionNameInput.getValue()
+        "edu_institute":this.$refs.eduInstitutionNameInput.getValue(),
+        "edu_start_time":this.$refs.eduStart.getValue(),
+        "edu_end_time":this.$refs.eduEnd.getValue()
       };
       const headers = {
         Authorization: `Token ${localStorage.getItem('token')}`,

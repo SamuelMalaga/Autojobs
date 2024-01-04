@@ -4,19 +4,20 @@
     <div class="popup_inner">
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Edit Certification new Modal</p>
+          <p class="modal-card-title">Update Experience new Modal</p>
           <button class="delete" aria-label="close" @click="handleClose"></button>
         </header>
         <section class="modal-card-body">
-          <TextInputComponent ref="certNameInput" title="Certification Name" placeholder="Type the name/title of the certification" :default-value="certification.cert_name"/>
-          <TextInputComponent ref="certInstitutionNameInput" title="Institution Name" placeholder="Type the name of the Institution" :default-value="certification.cert_institute"/>
+          <TextInputComponent ref="expCompany" title="Company Name" placeholder="Type the name of the Institution" :default-value="Experience.exp_company"/>
+          <TextInputComponent ref="expName" title="Experience title" placeholder="Type the name/title of the education/course" :default-value="Experience.exp_title"/>
+          <LongTextInputComponent ref="expDesc" title="Experience description" placeholder="Description of your experience" :default-value="Experience.exp_description"/>
           <div class="field has-addons">
-            <DateInputComponent class="control is-expanded" ref="certEmmission" title="Certification emmission date" :default-value="certification.cert_emmited_at" />
-            <DateInputComponent class="control is-expanded" ref="certExpiration" title="Certification expiration date" :default-value="certification.cert_valid_until" />
+            <DateInputComponent class="control is-expanded" ref="expStart" title="Experience start time" :default-value="Experience.exp_start_time"/>
+            <DateInputComponent class="control is-expanded" ref="expEnd" title="Experience end time" :default-value="Experience.exp_end_time"/>
           </div>
+          <!-- <DropdownInputComponent ref="lngProficiencyLevel" title="Language Proficiency Level" :options="languageProficiencyOptions" /> -->
         </section>
         <footer class="modal-card-foot">
-          <!-- Botões de Ação -->
           <button class="button is-success" @click="handleSubmit">Save changes</button>
           <button class="button" @click="handleClose">Cancel</button>
         </footer>
@@ -29,19 +30,23 @@
 
 import axios from 'axios';
 import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
-import DateInputComponent from '../../CommonComponents/DateInputComponent.vue';
+import DropdownInputComponent from '../../CommonComponents/DropdownInputComponent.vue'
+import LongTextInputComponent from '@/components/CommonComponents/LongTextInputComponent.vue';
+import DateInputComponent from '@/components/CommonComponents/DateInputComponent.vue';
 
 export default {
-  components:{
+  components: {
     TextInputComponent,
+    DropdownInputComponent,
+    LongTextInputComponent,
     DateInputComponent
-  },
+},
   props: {
     isOpen: {
       type: Boolean,
       required: true,
     },
-    certification:{
+    Experience:{
       type:Object,
       required: true
     },
@@ -49,10 +54,16 @@ export default {
       type: String,
       required: true,
     },
+
   },
   data() {
     return {
       dadosEditados: {},
+      languageProficiencyOptions:[
+      { field_name: "Basic", field_value: "A1" },
+      { field_name: "Intermediate", field_value: "B1" },
+      { field_name: "Advanced", field_value: "C1" },
+    ]
     };
   },
   methods: {
@@ -68,19 +79,21 @@ export default {
     },
     sendUpdateRequest() {
       const userId = this.$store.getters.getUserId;
-      const certificationId = this.certification.id;
-      const updateCertificationUrl = `${this.updateUrl}${certificationId}/update`
+      const experienceId = this.Experience.id;
+      const updateExperienceUrl = `${this.updateUrl}${experienceId}/update`
       const requestBody = {
         //Add more fields as needed
-        "cert_name":this.$refs.certNameInput.getValue(),
-        "cert_institute":this.$refs.certInstitutionNameInput.getValue(),
-        "cert_emmited_at" :this.$refs.certEmmission.getValue(),
-        "cert_valid_until":this.$refs.certExpiration.getValue()
+        "exp_company": this.$refs.expCompany.getValue(),
+        "exp_description":  this.$refs.expDesc.getValue(),
+        "exp_title": this.$refs.expName.getValue(),
+        "exp_start_time": this.$refs.expStart.getValue(),
+        "exp_end_time": this.$refs.expEnd.getValue(),
       };
       const headers = {
         Authorization: `Token ${localStorage.getItem('token')}`,
       };
-      axios.put(updateCertificationUrl, requestBody, { headers })
+      console.log(requestBody)
+      axios.put(updateExperienceUrl, requestBody, { headers })
         .then(response => {
           this.$emit("data-updated");
         })

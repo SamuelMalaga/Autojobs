@@ -4,15 +4,17 @@
     <div class="popup_inner">
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Create Education New Modal</p>
+          <p class="modal-card-title">Create Work Experience New Modal</p>
           <button class="delete" aria-label="close" @click="handleClose"></button>
         </header>
         <section class="modal-card-body">
-          <TextInputComponent ref="eduInstitutionNameInput" title="Education Institute Name" placeholder="Type the name of the Institution" />
-          <TextInputComponent ref="eduDescriptionInput" title="Education Title" placeholder="Type the name/title of the education/course" />
+          <TextInputComponent ref="expCompany" title="Company Name" placeholder="Type the name of the Institution" />
+          <TextInputComponent ref="expName" title="Experience title" placeholder="Type the name/title of the education/course" />
+          <LongTextInputComponent ref="expDesc" title="Experience description" placeholder="Description of your experience" />
+          <DropdownInputComponent ref="expType" title="Type of work experience" :options="WorkExperienceType" />
           <div class="field has-addons">
-            <DateInputComponent class="control is-expanded" ref="eduStart" title="Education started in" />
-            <DateInputComponent class="control is-expanded" ref="eduEnd" title="Ended in"/>
+            <DateInputComponent class="control is-expanded" ref="expStart" title="Experience start time" />
+            <DateInputComponent class="control is-expanded" ref="expEnd" title="Experience end time"/>
           </div>
         </section>
         <footer class="modal-card-foot">
@@ -29,11 +31,14 @@
 
 import axios from 'axios';
 import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
-import DateInputComponent from '../../CommonComponents/DateInputComponent.vue';
-
+import DropdownInputComponent from '../../CommonComponents/DropdownInputComponent.vue';
+import LongTextInputComponent from '../../CommonComponents/LongTextInputComponent.vue';
+import DateInputComponent from '@/components/CommonComponents/DateInputComponent.vue';
 export default {
   components:{
     TextInputComponent,
+    DropdownInputComponent,
+    LongTextInputComponent,
     DateInputComponent
   },
   props: {
@@ -49,9 +54,22 @@ export default {
   data() {
     return {
       dadosEditados: {},
+      WorkExperienceType:[
+      { field_name: "Work", field_value: "work" },
+      { field_name: "Volunteer", field_value: "volunteer" },
+      { field_name: "Project", field_value: "project" },
+    ]
     };
   },
   methods: {
+    formatDateForSubmit(dateString) {
+      if (!dateString) {
+        return '';
+      }
+      const date = new Date(dateString);
+      // Retorna a data formatada no formato "YYYY-MM-DDTHH:mm:ss.sssZ"
+      return date.toISOString();
+    },
     handleSubmit() {
       this.sendCreateRequest();
       this.$emit("submit", this.dadosEditados);
@@ -62,14 +80,17 @@ export default {
     sendCreateRequest() {
       const createUrl = `${this.createEndpoint}create/`;
       const requestBody = {
-        "edu_description":this.$refs.eduDescriptionInput.getValue(),
-        "edu_institute":this.$refs.eduInstitutionNameInput.getValue(),
-        "edu_start_time":this.$refs.eduStart.getValue(),
-        "edu_end_time":this.$refs.eduEnd.getValue()
+        "exp_company": this.$refs.expCompany.getValue(),
+        "exp_description": this.$refs.expDesc.getValue(),
+        "exp_start_time": this.$refs.expStart.getValue(),
+        "exp_end_time": this.$refs.expEnd.getValue(),
+        "exp_type": this.$refs.expType.getValue(),
+        "exp_title": this.$refs.expName.getValue()
       };
       const headers = {
         Authorization: `Token ${localStorage.getItem('token')}`,
       };
+      console.log(requestBody)
 
       axios.post(createUrl, requestBody, { headers })
         .then(response => {

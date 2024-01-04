@@ -528,9 +528,9 @@ def delete_work_experience(request, user_id, exp_id):
     work_experience.delete()
     return Response({'detail': 'Work experience deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
 
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def create_user_work_experience(request, user_id):
     user = get_object_or_404(User, pk=user_id)
 

@@ -4,16 +4,13 @@
     <div class="popup_inner">
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Create Education New Modal</p>
+          <p class="modal-card-title">Create Certification New Modal</p>
           <button class="delete" aria-label="close" @click="handleClose"></button>
         </header>
         <section class="modal-card-body">
-          <TextInputComponent ref="eduInstitutionNameInput" title="Education Institute Name" placeholder="Type the name of the Institution" />
-          <TextInputComponent ref="eduDescriptionInput" title="Education Title" placeholder="Type the name/title of the education/course" />
-          <div class="field has-addons">
-            <DateInputComponent class="control is-expanded" ref="eduStart" title="Education started in" />
-            <DateInputComponent class="control is-expanded" ref="eduEnd" title="Ended in"/>
-          </div>
+          <TextInputComponent ref="lngName" title="Language Name" placeholder="Type the name of the Institution"/>
+          <TextInputComponent ref="lngCountry" title="Language Country Name" placeholder="Type the name/title of the education/course" />
+          <DropdownInputComponent ref="lngProficiencyLevel" title="Language Proficiency Level" :options="languageProficiencyOptions" />
         </section>
         <footer class="modal-card-foot">
           <!-- Botões de Ação -->
@@ -29,12 +26,11 @@
 
 import axios from 'axios';
 import TextInputComponent from '../../CommonComponents/TextInputComponent.vue';
-import DateInputComponent from '../../CommonComponents/DateInputComponent.vue';
-
+import DropdownInputComponent from '../../CommonComponents/DropdownInputComponent.vue';
 export default {
   components:{
     TextInputComponent,
-    DateInputComponent
+    DropdownInputComponent
   },
   props: {
     isOpen: {
@@ -49,6 +45,11 @@ export default {
   data() {
     return {
       dadosEditados: {},
+      languageProficiencyOptions:[
+      { field_name: "Basic", field_value: "A1" },
+      { field_name: "Intermediate", field_value: "B1" },
+      { field_name: "Advanced", field_value: "C1" },
+    ]
     };
   },
   methods: {
@@ -63,9 +64,7 @@ export default {
       const createUrl = `${this.createEndpoint}create/`;
       const requestBody = {
         "edu_description":this.$refs.eduDescriptionInput.getValue(),
-        "edu_institute":this.$refs.eduInstitutionNameInput.getValue(),
-        "edu_start_time":this.$refs.eduStart.getValue(),
-        "edu_end_time":this.$refs.eduEnd.getValue()
+        "edu_institute":this.$refs.eduInstitutionNameInput.getValue()
       };
       const headers = {
         Authorization: `Token ${localStorage.getItem('token')}`,
