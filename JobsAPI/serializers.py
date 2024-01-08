@@ -6,14 +6,28 @@ class JobSerializer(serializers.ModelSerializer):
   class Meta:
     model = Job
     fields = '__all__'
-    #['job_id','job_title','company_name','job_link', 'job_description','double_check']
 
 class ApplicationSerializer(serializers.ModelSerializer):
-  appl_job = JobSerializer()
-  class Meta:
-    model = Application
-    fields = '__all__'
+    # Remova o campo appl_job deste serializer e substitua por um IntegerField
+    appl_job_id = serializers.IntegerField(write_only=True)
 
+    class Meta:
+        model = Application
+        fields = '__all__'
+
+    def create(self, validated_data):
+        appl_job_id = validated_data.pop('appl_job_id', None)
+
+        # Crie a aplicação sem o campo appl_job
+        application = super().create(validated_data)
+
+        # Se houver um ID de job, associe-o à aplicação
+        if appl_job_id:
+            job = Job.objects.get(pk=appl_job_id)
+            application.appl_job = job
+            application.save()
+
+        return application
 class CertificationSerializer(serializers.ModelSerializer):
   class Meta:
     model = Certification

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from datetime import datetime
 from django.utils import timezone
 class Job(models.Model):
-    job_id = models.IntegerField(null=True)
+    #job_id = models.IntegerField(null=True)
     job_title = models.TextField(null=True)
     company_name = models.TextField(null=True)
     job_link = models.TextField()

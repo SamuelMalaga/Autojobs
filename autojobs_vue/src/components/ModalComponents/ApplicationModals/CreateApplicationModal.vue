@@ -41,21 +41,31 @@ export default {
       try {
         const createApplicationUrl = `${this.$store.getters.getBaseURL}users/${this.$store.getters.getUserId}/applications/create/`
 
+        console.log(this.TargetJob)
+
         const headers = {
           Authorization: `Token ${localStorage.getItem('token')}`,
         };
-        const response = await axios.post(createApplicationUrl, {
-          appl_job: this.TargetJob.id,
-        },{ headers });
-
-        // Check if the request was successful (status code 2xx)
-        if (response.status === 200) {
-          // Handle success (e.g., close the modal)
-          this.closeCreateApplicationModal();
-        } else {
-          // Handle error (e.g., show an error message)
-          console.error('Error:', response.statusText);
+        const requestBody = {
+          "appl_job_id": this.TargetJob.id,
+          "appl_user": this.$store.getters.getUserId
         }
+
+        // const response = await axios.post(createApplicationUrl, {
+        //   appl_job_id: this.TargetJob.id,
+        //   appl_user: this.$store.getters.getUserId
+        // },{ headers });
+
+        axios.post(createApplicationUrl, requestBody, { headers })
+        .then(response => {
+          console.log('Dados criados com sucesso:', response.data);
+          // Emitir evento de atualização
+          this.closeCreateApplicationModal();
+        })
+        .catch(error => {
+          console.error('Erro ao atualizar dados:', error);
+        });
+
       } catch (error) {
         console.error('Error:', error.message);
       }

@@ -8,7 +8,7 @@
         <ApplicationsDisplayComponent
             :ApplicationsList="applications"
             :ColumnStatus= "'Screening'"
-            :NextColumnStatus="'Initial Interview'"
+            :NextColumnStatus="'Inital interview'"
             :PreviousColumnStatus="'Cancelled'"
             :toggleCard="toggleCard"
             :expandedCards="expandedCards"
@@ -31,7 +31,7 @@
             :ApplicationsList="applications"
             :ColumnStatus= "'Interview'"
             :NextColumnStatus="'Technical Interview'"
-            :PreviousColumnStatus="'Initial Interview'"
+            :PreviousColumnStatus="'Inital interview'"
             :toggleCard="toggleCard"
             :expandedCards="expandedCards"
             :changeStatus="changeStatus"

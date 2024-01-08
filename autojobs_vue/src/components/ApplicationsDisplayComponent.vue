@@ -20,9 +20,15 @@
             <div class="hidden-content" v-if="expandedCards.includes(application.id)" >
               <div class="card-content">
                 <div class="content">
-                  Lorem ipsum leo risus, porta ac consectetur ac, vestibulum at eros. Donec id elit non mi porta gravida at eget metus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Cras mattis consectetur purus sit amet fermentum.
-                  <p>
-                  </p>
+                  <p> Last update status: </p>
+                  <div class="columns is-gapless is-multiline">
+                    <div class="column ">
+                      <button class="button is-fullwidth" >Generate resumé</button>
+                    </div>
+                    <div class="column ">
+                      <button class="button is-fullwidth" >Used resumé</button>
+                    </div>
+                  </div>
                 </div>
                 <footer class="card-footer">
                   <a class="card-footer-item" @click="changeStatus(application,this.PreviousColumnStatus)" ><font-awesome-icon  icon="arrow-left"  /></a>

@@ -157,19 +157,40 @@ def execute_LinkPublicScraper(request):
 # ---------------------------------------------------------------
 # <---              Application Related Views                --->
 # ---------------------------------------------------------------
-@api_view(['GET','POST'])
 # @authentication_classes([SessionAuthentication, TokenAuthentication])
 # @permission_classes([IsAuthenticated])
+@api_view(['GET'])
 def application_list(request,user_id):
   if request.method =='GET':
     applications = Application.objects.filter(appl_user=user_id)
     serializer = ApplicationSerializer(applications, many=True)
+
+    # Modificação aqui: Serializar os jobs relacionados
+    job_data_list = []
+    for application in applications:
+        job_serializer = JobSerializer(application.appl_job)
+        job_data = job_serializer.data
+        job_data_list.append(job_data)
+
+    # Adicionar os dados dos jobs à resposta
+    for app_data, job_data in zip(serializer.data, job_data_list):
+        app_data['appl_job'] = job_data
+
     status_options = dict(Application.APPL_STATUSES)
-    response_data = {
-            'applications': serializer.data,
-            'status_options': status_options,
-        }
-    return Response(response_data)
+    data = {
+        'applications': serializer.data,
+        'status_options': status_options,
+    }
+
+    return Response(data, status=status.HTTP_200_OK)
+    # applications = Application.objects.filter(appl_user=user_id)
+    # serializer = ApplicationSerializer(applications, many=True)
+    # status_options = dict(Application.APPL_STATUSES)
+    # response_data = {
+    #         'applications': serializer.data,
+    #         'status_options': status_options,
+    #     }
+    # return Response(response_data)
   if request.method == 'POST':
     serializer = ApplicationSerializer(data=request.data)
     if serializer.is_valid():
@@ -227,24 +248,29 @@ def delete_application(request, user_id, appl_id):
     application.delete()
     return Response({'detail': 'application deleted successfully'},status=status.HTTP_204_NO_CONTENT)
 
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 @api_view(['POST'])
-@authentication_classes([SessionAuthentication, TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def create_user_application(request, user_id):
-    user = get_object_or_404(User, pk=user_id)
+    serializer = ApplicationSerializer(data=request.data)
 
-    if request.method == 'POST':
-        serializer = ApplicationSerializer(data=request.data, context={'request': request})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        # print('user_id',user.id)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # user = get_object_or_404(User, pk=user_id)
 
-        if serializer.is_valid():
-            serializer.validated_data['appl_user'] = user
-            instance = serializer.save()
-            data = ApplicationSerializer(instance).data
-            return Response(data, status=status.HTTP_201_CREATED)
+    # if request.method == 'POST':
+    #     serializer = ApplicationSerializer(data=request.data, context={'request': request})
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     if serializer.is_valid():
+    #         serializer.validated_data['appl_user'] = user
+    #         instance = serializer.save()
+    #         data = ApplicationSerializer(instance).data
+    #         return Response(data, status=status.HTTP_201_CREATED)
+
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # ---------------------------------------------------------------
 # <---              Certification Related Views              --->
 # ---------------------------------------------------------------
